@@ -96,7 +96,7 @@ Y.mix(YUI.Env[Y.version].modules, {
     "aui-base-html5-shiv": {
         "condition": {
             "name": "aui-base-html5-shiv",
-            "trigger": "aui-base",
+            "trigger": "node-base",
             "ua": "ie"
         }
     },
@@ -332,9 +332,7 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "aui-event": {
         "use": [
-            "aui-event-base",
-            "aui-event-delegate-change",
-            "aui-event-delegate-submit"
+            "aui-event-base"
         ]
     },
     "aui-event-base": {
@@ -343,6 +341,11 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "aui-event-delegate-change": {
+        "condition": {
+            "name": "aui-event-delegate-change",
+            "trigger": "event-base-ie",
+            "ua": "ie"
+        },
         "requires": [
             "aui-event-base",
             "event-delegate",
@@ -350,6 +353,11 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     },
     "aui-event-delegate-submit": {
+        "condition": {
+            "name": "aui-event-delegate-submit",
+            "trigger": "event-base-ie",
+            "ua": "ie"
+        },
         "requires": [
             "aui-event-base",
             "event-delegate",
@@ -374,7 +382,7 @@ Y.mix(YUI.Env[Y.version].modules, {
 
     return !testFeature('event', 'input');
 },
-            "trigger": "aui-event"
+            "trigger": "aui-event-base"
         },
         "requires": [
             "aui-event-base",
@@ -982,6 +990,13 @@ Y.mix(YUI.Env[Y.version].modules, {
         ],
         "skinnable": true
     },
+    "aui-undo-redo": {
+        "requires": [
+            "base",
+            "base-build",
+            "promise"
+        ]
+    },
     "aui-url": {
         "requires": [
             "oop",
@@ -1044,4 +1059,4 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = '8d2112cfec7c545d4f53ed15310ca2ed';
+YUI.Env[Y.version].md5 = 'fc5624680280a730c0ddde58f4e4dc07';
