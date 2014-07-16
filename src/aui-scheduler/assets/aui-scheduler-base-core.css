@@ -107,7 +107,11 @@
 }
 
 .scheduler-view-markercell {
-    height: 52px;
+    height: 51px;
+}
+
+.scheduler-view-marker-child {
+    height: 25px;
 }
 
 .scheduler-view-marker-division {
