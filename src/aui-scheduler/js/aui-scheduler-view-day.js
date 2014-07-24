@@ -1448,7 +1448,7 @@ var SchedulerDayView = A.Component.create({
             if (recorder && !scheduler.get('disabled')) {
                 recorder.hidePopover();
 
-                if (target.test('.' + CSS_SCHEDULER_VIEW_DAY_TABLE_COL_SHIM)) {
+                if (target.test('.' + CSS_SCHEDULER_VIEW_DAY_TABLE_COL_SHIM) || target.test(instance.get('markerNodeClass'))) {
                     this._prepareEventCreation(event);
                 }
                 else if (target.test(
