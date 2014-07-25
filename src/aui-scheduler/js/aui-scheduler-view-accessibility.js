@@ -5,33 +5,21 @@
 * @submodule aui-scheduler-view-accessibility
 */
 
-var Lang = A.Lang,
-    isArray = Lang.isArray,
+var DateMath = A.DataType.DateMath,
+    Lang = A.Lang,
     isString = Lang.isString,
-    isObject = Lang.isObject;
-
-/**
-* A base class for SchedulerViewAccessibility.
-*
-* @class A.SchedulerViewAccessibility
-* @param {Object} config Object literal specifying widget configuration
-*     properties.
-* @constructor
-*/
-
-var Lang = A.Lang,
-
-    DateMath = A.DataType.DateMath,
+    isObject = Lang.isObject,
 
     getCN = A.getClassName,
 
-    CSS_SCHEDULER_VIEW_DAY_MARKER_CHILD = getCN('scheduler-view', 'marker', 'child'),
     CSS_SCHEDULER_VIEW_DAY_HEADER_DAY = getCN('scheduler-view', 'day', 'header', 'day'),
+    CSS_SCHEDULER_VIEW_DAY_MARKER_CHILD = getCN('scheduler-view', 'marker', 'child'),
     CSS_SVT_COLGRID = getCN('scheduler-view', 'table', 'colgrid');
 
 var SchedulerViewAccessibility = function() {};
 
 SchedulerViewAccessibility.ATTRS = {
+
     /**
     * Contains the function that formats the aria label date.
     *
@@ -40,8 +28,8 @@ SchedulerViewAccessibility.ATTRS = {
     */
     ariaLabelDateFormatter: {
         value: function(date) {
-            var instance = this;
-            var scheduler = instance.get('scheduler');
+            var instance = this,
+                scheduler = instance.get('scheduler');
 
             return A.DataType.Date.format(
                 date, {
@@ -245,8 +233,7 @@ A.mix(SchedulerViewAccessibility.prototype, {
     _bindFocusManager: function(visible) {
         var instance = this,
             nodeToPlug = null,
-            focusManagerConfig = {},
-            name = instance.get('name');
+            focusManagerConfig = {};
 
         if (visible) {
             if (instance instanceof A.SchedulerTableView) {
@@ -294,7 +281,7 @@ A.mix(SchedulerViewAccessibility.prototype, {
             focusManager = instance.tableNode.focusManager;
         }
 
-        recorder.on('save', function(event) {
+        recorder.on('save', function() {
             this.popover.onceAfter('visibleChange', focusManager.focus, focusManager);
         });
     },
@@ -307,17 +294,17 @@ A.mix(SchedulerViewAccessibility.prototype, {
      * @protected
      */
     _normalizeEvent: function(event) {
-        var instance = this;
-        var target = event.target;
-        var colNumber = parseInt(target.getData('colnumber'));
-        var centerXY = target.getCenterXY();
-        var name = instance.get('name');
+        var instance = this,
+            target = event.target,
+            colNumber = parseInt(target.getData('colnumber')),
+            centerXY = target.getCenterXY();
 
         event.pageX = centerXY[0];
         event.pageY = centerXY[1];
 
         if (instance instanceof A.SchedulerDayView) {
             var column = instance.colDaysNode.item(colNumber);
+
             event.currentTarget = column;
         }
     },
