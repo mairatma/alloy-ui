@@ -1333,6 +1333,7 @@ Y.mix(YUI.Env[Y.version].modules, {
         "requires": [
             "node-event-html5",
             "querystring-stringify-simple",
+            "aui-aria",
             "aui-node",
             "aui-component",
             "aui-debounce"
@@ -1399,4 +1400,4 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = '1d9b51f674b35ebcaadf149c02b0afec';
+YUI.Env[Y.version].md5 = 'a6651d345fe51f69d45db8dc7efc6ede';
