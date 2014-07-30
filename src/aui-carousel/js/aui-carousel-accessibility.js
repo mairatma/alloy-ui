@@ -4,7 +4,7 @@
  * @module aui-carousel-accessibility
  */
 
- var Lang = A.Lang;
+var Lang = A.Lang;
 
 function CarouselAccessibility() {}
 
@@ -17,7 +17,7 @@ CarouselAccessibility.prototype = {
      * @protected
      */
     initializer: function() {
-        this._setAriaElements();
+        this._setARIAElements();
         this._bindKeypress();
     },
 
@@ -28,7 +28,9 @@ CarouselAccessibility.prototype = {
      * @protected
      */
     _bindKeypress: function() {
-        this._keyHandler = this.get('boundingBox').on('keydown', A.bind(this._handleKeypressEvent, this));
+        this._eventHandles.push(
+            this.get('boundingBox').on('keydown', A.bind(this._handleKeypressEvent, this))
+        );
     },
 
     /**
@@ -39,54 +41,51 @@ CarouselAccessibility.prototype = {
      * @protected
      */
     _handleKeypressEvent: function(event) {
-        if (event.target.hasClass('carousel-focused')) {
-            var keyCode = event.keyCode;
+        var keyCode = event.keyCode;
 
-            if (keyCode === 37) {
-                this.prev();
+        if (keyCode === 37) {
+            this.prev();
+        }
+        else if (keyCode === 39) {
+            this.next();
+        }
+        else if (keyCode === 32) {
+            if (this.get('playing')) {
+                this.pause();
             }
-            else if (keyCode === 39) {
-                this.next();
-            }
-            else if (keyCode === 32) {
-                if (this.get('playing')) {
-                    this.pause();
-                }
-                else {
-                    this.play();
-                }
+            else {
+                this.play();
             }
         }
     },
 
-     /**
-     * Set the Aria Elements of the carousel.
+    /**
+     * Set the ARIA Elements of the carousel.
      *
-     * @method _setAriaElements
-     * @protexted
+     * @method _setARIAElements
+     * @protected
      */
-    _setAriaElements: function() {
+    _setARIAElements: function() {
         this.plug(A.Plugin.Aria, {
-                attributes: {
-                    ariaLabel: 'label'
-                },
-                roleName: 'presentation'
-            }
-        );
-    },
+            attributes: {
+                ARIALabel: 'label'
+            },
+            roleName: 'presentation'
+        });
+    }
 };
 
 CarouselAccessibility.ATTRS = {
-     /**
-      * Sets the `aria-label` for the carousel.
-      *
-      * @attribute ariaLabel
-      * @type String
-      */
-     ariaLabel: {
+    /**
+     * Sets the `aria-label` for the carousel.
+     *
+     * @attribute ARIALabel
+     * @type String
+     */
+    ARIALabel: {
         validator: Lang.isString,
         value: 'Toggle play and pause with spacebar.  Navigate left and right with arrow keys'
-     },
+    },
 
     /**
      * Specify the tab order of elements.
