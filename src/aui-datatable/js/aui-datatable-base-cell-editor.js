@@ -611,7 +611,7 @@ BaseCellEditor = A.Component.create({
             var instance = this;
             var strings = instance.getStrings();
 
-            var config = {
+            return A.merge({
                 activeState: false,
                 children: [
                     [
@@ -629,11 +629,8 @@ BaseCellEditor = A.Component.create({
                             label: strings.cancel
                         }
                     ]
-                ],
-                initializeAll: true
-            }
-
-            return A.merge(config, val);
+                ]
+            }, val);
         },
 
         /**
