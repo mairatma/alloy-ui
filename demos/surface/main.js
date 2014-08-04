@@ -4,10 +4,10 @@ YUI({
         'aui-surface': 'debug'
     }
 }).use('aui-surface-app', 'aui-surface-screen-html', 'transition', function(Y) {
-    var loading = Y.one('#loading'),
-        initialRequest = Y.one('#initial-request'),
-        surfaceUpdate = Y.one('#surface-update'),
-        pageLoad = Date.now();
+    var initialRequest = Y.one('#initial-request'),
+        loading = Y.one('#loading'),
+        pageLoad = Date.now(),
+        surfaceUpdate = Y.one('#surface-update');
 
     initialRequest.setHTML(pageLoad);
 
@@ -50,10 +50,10 @@ YUI({
     var dummyScreen = Y.Base.create('dummyScreen', Y.Screen, [], {
         getSurfaceContent: function(surfaceId) {
             var res = {
-                'header': '<h1>Dummy header</h1><p>For a dummy page address that doesn\'t really exists. ' +
+                header: '<h1>Dummy header</h1><p>For a dummy page address that doesn\'t really exists. ' +
                     'Your history now has an invalid page entry. ' +
                     'If you try to refresh / reload the page now, you will end up with a 404.',
-                'main': '<h2>Dummy content</h2>' +
+                main: '<h2>Dummy content</h2>' +
                     '<p>Content for the #main surface on /dummy. Surface #footer not given, ' +
                     'using the Surface\'s default content.'
             };
@@ -83,10 +83,11 @@ YUI({
 
     var homeScreen = Y.Base.create('homeScreen', Y.HTMLScreen, [], {
         beforeDeactivate: function() {
-            var cancellableTextarea = Y.one('#cancellable-textarea');
-            var cancellableNotice = Y.one('#cancellable-notice');
+            var cancel,
+                cancellableNotice = Y.one('#cancellable-notice'),
+                cancellableTextarea = Y.one('#cancellable-textarea');
 
-            var cancel = cancellableTextarea.get('value').length !== 0;
+            cancel = cancellableTextarea.get('value').length !== 0;
 
             if (cancel) {
                 cancellableNotice.setStyle('opacity', 1).show();
