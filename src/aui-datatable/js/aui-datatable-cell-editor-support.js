@@ -134,7 +134,7 @@ A.mix(CellEditorSupport.prototype, {
                 editor.on({
                     visibleChange: A.bind(instance._onEditorVisibleChange, instance),
                     save: A.bind(instance._onEditorSave, instance),
-                    cancel: A.bind(instance._onEditorCancel, instance)
+                    cancel: A.bind(instance._refocusActiveCell, instance)
                 });
 
                 editor.set('zIndex', CellEditorSupport.EDITOR_ZINDEX);
@@ -145,21 +145,6 @@ A.mix(CellEditorSupport.prototype, {
 
             editor.show().move(alignNode.getXY());
         }
-    },
-
-    /**
-     * Invoked when the editor fires the 'cancel' event.
-     *
-     * Fires the '_refocusActiveCell' method, which returns keyboard focus to
-     * the last active cell.
-     *
-     * @method _onEditorCancel
-     * @protected
-     */
-    _onEditorCancel: function() {
-        var instance = this;
-
-        instance._refocusActiveCell();
     },
 
     /**
@@ -201,7 +186,7 @@ A.mix(CellEditorSupport.prototype, {
     },
 
     /**
-     * Places keyboard focus onto the last active cell
+     * Places keyboard focus onto the last active cell.
      *
      * @method _refocusActiveCell
      * @protected
