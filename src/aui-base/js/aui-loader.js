@@ -73,6 +73,11 @@ Y.mix(YUI.Env[Y.version].modules, {
             "aui-component"
         ]
     },
+    "aui-aria-table-sortable": {
+        "requires": [
+            "aui-aria"
+        ]
+    },
     "aui-arraysort": {
         "requires": [
             "arraysort"
