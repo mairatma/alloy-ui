@@ -180,8 +180,6 @@ A.mix(CellEditorSupport.prototype, {
 
         if (event.newVal) {
             editor._syncFocus();
-
-            instance.blur();
         }
     },
 
