@@ -1213,6 +1213,11 @@ Y.mix(YUI.Env[Y.version].modules, {
             "aui-toggler-delegate"
         ]
     },
+    "aui-toggler-accessibility": {
+        "requires": [
+            "aui-toggler-base"
+        ]
+    },
     "aui-toggler-base": {
         "requires": [
             "transition",
