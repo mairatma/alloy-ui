@@ -18,6 +18,29 @@ var ROW_TEMPLATE = '<div class="row">';
 A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
 
     /**
+     * Adds a col to this row.
+     *
+     * @method addCol
+     * @param {Number} index Index to add the the col.
+     * @param {A.LayoutCol} col Col to be added.
+     */
+    addCol: function(index, col) {
+        var cols = this.get('cols');
+
+        if (!col) {
+            col = new A.LayoutCol({
+                size: 1,
+                value: new A.Content()
+            });
+        }
+
+        col.addTarget(this);
+        cols.splice(index, 0, col);
+
+        this.set('cols', cols);
+    },
+
+    /**
      * Renders row template
      *
      * @method getContent
@@ -52,6 +75,54 @@ A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
         });
 
         return size;
+    },
+
+    /**
+     * Removes a col from this row.
+     *
+     * @method removeCol
+     * @param {Number | A.LayoutCol} col Column index or column to be removed from this row
+     */
+    removeCol: function(col) {
+        if (A.Lang.isNumber(col)) {
+            this._removeColByIndex(col);
+        }
+        else if (A.instanceOf(col, A.LayoutCol)) {
+            this._removeColByReference(col);
+        }
+    },
+
+    /**
+     * Removes a col from this row by it's index.
+     *
+     * @method _removeColByIndex
+     * @param {Number} index Column index to be removed from this row
+     * @protected
+     */
+    _removeColByIndex: function(index) {
+        var cols = this.get('cols');
+        cols.splice(index, 1);
+        this.set('cols', cols);
+    },
+
+    /**
+     * Removes a col from this row by it's reference.
+     *
+     * @method _removeColByReference
+     * @param {A.LayoutCol} col Column to be removed from this row
+     * @protected
+     */
+    _removeColByReference: function(col) {
+        var cols = this.get('cols'),
+            index;
+
+        index = cols.indexOf(col);
+
+        if (index >= 0) {
+            cols.splice(index, 1);
+        }
+
+        this.set('cols', cols);
     }
 }, {
 
@@ -72,6 +143,9 @@ A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
          * @type {Array}
          */
         cols: {
+            setter: function(cols) {
+                A.Array.invoke(cols, 'addTarget', this);
+            },
             validator: A.Lang.isArray
         }
     }
