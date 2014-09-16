@@ -29,7 +29,7 @@ YUI.add('aui-layout-col-tests', function(Y) {
             var colTemplate = this.layoutCol.getContent(),
                 colSize = this.layoutCol.get('size');
 
-            Assert.isTrue(colTemplate.hasClass('col-md-' + colSize));
+            Assert.isTrue(colTemplate.hasClass('col-sm-' + colSize));
             Assert.areEqual('foo', colTemplate.text());
         }
     }));
