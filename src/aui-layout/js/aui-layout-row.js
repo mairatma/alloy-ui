@@ -34,7 +34,6 @@ A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
             });
         }
 
-        col.addTarget(this);
         cols.splice(index, 0, col);
 
         this.set('cols', cols);
@@ -143,9 +142,6 @@ A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
          * @type {Array}
          */
         cols: {
-            setter: function(cols) {
-                A.Array.invoke(cols, 'addTarget', this);
-            },
             validator: A.Lang.isArray
         }
     }
