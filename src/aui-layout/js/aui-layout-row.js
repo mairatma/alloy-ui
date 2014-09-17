@@ -28,10 +28,7 @@ A.LayoutRow = A.Base.create('layout-row', A.Base, [], {
         var cols = this.get('cols');
 
         if (!col) {
-            col = new A.LayoutCol({
-                size: 1,
-                value: new A.Content()
-            });
+            col = new A.LayoutCol();
         }
 
         cols.splice(index, 0, col);
