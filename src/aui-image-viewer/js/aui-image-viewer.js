@@ -328,6 +328,10 @@ A.ImageViewer = A.Base.create(
                 return val;
             }
 
+            if (this.get('maxWidth') != Infinity && !val.width) {
+                val.width = this.get('maxWidth');
+            }
+
             return A.merge({
                 height: 70,
                 showControls: false,
