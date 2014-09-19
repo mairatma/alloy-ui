@@ -373,55 +373,6 @@ YUI.add('aui-image-viewer-tests', function(Y) {
                 this._imageViewer._thumbnailsWidget.get('width'),
                 'Thumbnails widget with value is 100% by default'
             );
-
-            this._imageViewer.set('maxWidth', 200);
-            Y.Assert.areEqual(
-                200,
-                this._imageViewer._thumbnailsWidget.get('width'),
-                'Thumbnails widget with value should be refreshed when ImageViewer`s maxWidth changes'
-            );
-        },
-
-        'should set thumbnailsConfig width when maxWidth is in ImageViewer constructor': function() {
-            this._createImageViewer({
-                maxWidth: 500
-            });
-
-            Y.Assert.areEqual(
-                500,
-                this._imageViewer._thumbnailsWidget.get('width'),
-                'Thumbnails widget with value should be equal than ImageViewer maxWidth'
-            );
-        },
-
-        'should set width correctly when thumbnailsConfig.width and maxWidth are present ': function() {
-            this._createImageViewer({
-                maxWidth: 500,
-                thumbnailsConfig: {
-                    width: 1000
-                }
-            });
-
-            Y.Assert.areEqual(
-                500,
-                this._imageViewer._thumbnailsWidget.get('width'),
-                'Thumbnails widget with value should be equal than ImageViewer maxWidth'
-            );
-        },
-
-        'should set width correctly when thumbnailsConfig.width and maxWidth are present ': function() {
-            this._createImageViewer({
-                maxWidth: 500,
-                thumbnailsConfig: {
-                    width: 400
-                }
-            });
-
-            Y.Assert.areEqual(
-                400,
-                this._imageViewer._thumbnailsWidget.get('width'),
-                'Thumbnails widget with value should be equal than ImageViewer maxWidth'
-            );
         },
 
         'should use link images for thumbnail sources': function() {

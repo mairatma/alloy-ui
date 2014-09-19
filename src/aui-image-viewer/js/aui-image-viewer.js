@@ -87,7 +87,6 @@ A.ImageViewer = A.Base.create(
             this._eventHandles.push(
                 this.after({
                     linksChange: this._afterLinksChange,
-                    maxWidthChange: this._afterMaxWidthChange,
                     thumbnailsConfigChange: this._afterThumbnailsConfigChange
                 }),
                 this._closeEl.after('click', A.bind(this._afterCloseClicked, this)),
@@ -163,18 +162,6 @@ A.ImageViewer = A.Base.create(
          */
         _afterLinksChange: function() {
             this._attachLinkEvent();
-        },
-
-        /**
-         * Fired after the `maxWidth` attribute changes.
-         *
-         * @method _afterResponsive
-         * @protected
-         */
-        _afterMaxWidthChange: function(event) {
-            if (event.newVal != Infinity) {
-                this.set('thumbnailsConfig', { width: event.newVal });
-            }
         },
 
         /**
@@ -339,14 +326,6 @@ A.ImageViewer = A.Base.create(
         _getThumbnailsConfig: function(val) {
             if (val === false) {
                 return val;
-            }
-
-            if (this.get('maxWidth') != Infinity ) {
-                if (!val.width) {
-                    val.width = this.get('maxWidth');
-                } else {
-                    val.width = Math.min(this.get('maxWidth'), val.width);
-                }
             }
 
             return A.merge({
