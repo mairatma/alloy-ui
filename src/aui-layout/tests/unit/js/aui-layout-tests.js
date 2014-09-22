@@ -2,6 +2,7 @@ YUI.add('aui-layout-tests', function(Y) {
 
     var Assert = Y.Assert,
         CONTAINER_CLASS = '.container',
+        Content,
         row,
         suite = new Y.Test.Suite('aui-layout');
 
@@ -9,7 +10,7 @@ YUI.add('aui-layout-tests', function(Y) {
         name: 'Layout Tests',
 
         setUp: function() {
-            var Content = Y.Base.create('content', Y.Base, [], {}, {
+            Content = Y.Base.create('content', Y.Base, [], {}, {
                 ATTRS: {
                     content: {
                         value: 'foo'
@@ -150,7 +151,7 @@ YUI.add('aui-layout-tests', function(Y) {
                         cols: [
                             new Y.LayoutCol({
                                 size: 4,
-                                value: new Y.Content()
+                                value: { content: 'foo' }
                             })
                         ]
                     });
@@ -197,7 +198,7 @@ YUI.add('aui-layout-tests', function(Y) {
                         cols: [
                             new Y.LayoutCol({
                                 size: 1,
-                                value: new Y.Content()
+                                value: new Content()
                             })
                         ]
                     });

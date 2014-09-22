@@ -10,7 +10,7 @@ YUI.add('aui-layout-row-tests', function(Y) {
         setUp: function() {
             col = new Y.LayoutCol({
                 size: 4,
-                value: new Y.Content()
+                value: { content: 'foo' }
             });
 
             this.layoutRow = new Y.LayoutRow({
@@ -18,11 +18,11 @@ YUI.add('aui-layout-row-tests', function(Y) {
                     col,
                     new Y.LayoutCol({
                         size: 2,
-                        value: new Y.Content()
+                        value: { content: 'foo' }
                     }),
                     new Y.LayoutCol({
                         size: 2,
-                        value: new Y.Content()
+                        value: { content: 'foo' }
                     })
                 ]
             });
@@ -107,7 +107,7 @@ YUI.add('aui-layout-row-tests', function(Y) {
             var childNumber,
                 col = new Y.LayoutCol({
                         size: 2,
-                        value: new Y.Content()
+                        value: { content: 'foo' }
                     }),
                 row = this.layoutRow;
 

@@ -1,11 +1,6 @@
 {
     "name": "aui-layout",
     "builds": {
-        "aui-content": {
-            "jsfiles": [
-                "js/aui-content.js"
-            ]
-        },
         "aui-layout": {
             "jsfiles": [
                 "js/aui-layout.js"

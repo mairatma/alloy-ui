@@ -1,9 +1,4 @@
 {
-    "aui-content": {
-        "requires": [
-            "base-build"
-        ]
-    },
     "aui-layout-builder": {
         "requires": [
             "aui-classnamemanager",
@@ -19,7 +14,6 @@
     },
     "aui-layout": {
         "requires": [
-            "aui-content",
             "aui-layout-col",
             "aui-layout-row",
             "aui-node-base",
@@ -35,7 +29,6 @@
     "aui-layout-row": {
         "requires": [
             "array-invoke",
-            "aui-content",
             "aui-node-base",
             "base-build"
         ]
