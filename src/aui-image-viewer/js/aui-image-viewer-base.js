@@ -69,7 +69,7 @@ A.ImageViewerBase = A.Base.create(
          * @protected
          */
         renderUI: function() {
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this.get('boundingBox').unselectable();
 
                 this._renderImagesForFirstTime();
@@ -116,7 +116,7 @@ A.ImageViewerBase = A.Base.create(
          * @return {Boolean}
          */
         hasNext: function() {
-            return this.get('circular') || this.get('currentIndex') < this._sources.length - 1;
+            return this.get('circular') || (this.get('currentIndex') < (this._sources.length - 1));
         },
 
         /**
@@ -126,7 +126,7 @@ A.ImageViewerBase = A.Base.create(
          * @return {Boolean}
          */
         hasPrev: function() {
-            return this.get('circular') || this.get('currentIndex') > 0;
+            return this.get('circular') || (this.get('currentIndex') > 0);
         },
 
         /**
@@ -136,11 +136,11 @@ A.ImageViewerBase = A.Base.create(
          */
         next: function() {
             if (this.hasNext()) {
-                if (this.get('currentIndex') === this._sources.length - 1) {
+                if (this.get('currentIndex') === (this._sources.length - 1)) {
                     this.set('currentIndex', 0);
                 }
                 else {
-                    this.set('currentIndex', this.get('currentIndex') + 1);
+                    this.set('currentIndex', (this.get('currentIndex') + 1));
                 }
             }
         },
@@ -153,10 +153,10 @@ A.ImageViewerBase = A.Base.create(
         prev: function() {
             if (this.hasPrev()) {
                 if (this.get('currentIndex') === 0) {
-                    this.set('currentIndex', this._sources.length - 1);
+                    this.set('currentIndex', (this._sources.length - 1));
                 }
                 else {
-                    this.set('currentIndex', this.get('currentIndex') - 1);
+                    this.set('currentIndex', (this.get('currentIndex') - 1));
                 }
             }
         },
@@ -190,7 +190,7 @@ A.ImageViewerBase = A.Base.create(
          * @protected
          */
         _afterResponsive: function() {
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 var image = this._getCurrentImage();
 
                 if (image) {
@@ -231,7 +231,7 @@ A.ImageViewerBase = A.Base.create(
          * @protected
          */
         _afterUISetVisible: function() {
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 if (this.get('visible')) {
                     this._showCurrentImage();
                 }
@@ -380,7 +380,7 @@ A.ImageViewerBase = A.Base.create(
          * @protected
          */
         _onResponsive: function() {
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 var image = this._getCurrentImage();
 
                 if (image) {
@@ -568,7 +568,7 @@ A.ImageViewerBase = A.Base.create(
                 return Math.floor(Math.random() * this._sources.length);
             }
             else {
-                return Math.max(Math.min(val, this._sources.length - 1), 0);
+                return Math.max(Math.min(val, (this._sources.length - 1)), 0);
             }
         },
 

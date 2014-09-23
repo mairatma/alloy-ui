@@ -70,7 +70,7 @@ A.ImageViewer = A.Base.create(
         renderUI: function() {
             A.ImageViewer.superclass.renderUI.apply(this, arguments);
 
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this._renderFooter();
             }
         },
@@ -84,7 +84,7 @@ A.ImageViewer = A.Base.create(
         bindUI: function() {
             A.ImageViewer.superclass.bindUI.apply(this, arguments);
 
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this._attachLinkEvent();
 
                 this._eventHandles.push(
@@ -177,7 +177,7 @@ A.ImageViewer = A.Base.create(
         _afterResponsive: function() {
             A.ImageViewer.superclass._afterResponsive.apply(this, arguments);
 
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this.footerNode.setStyle('width', '');
 
                 this.bodyNode.setStyles({
@@ -234,7 +234,7 @@ A.ImageViewer = A.Base.create(
         _afterUISetVisible: function() {
             A.ImageViewer.superclass._afterUISetVisible.apply(this, arguments);
 
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 if (this.get('visible')) {
                     this._fillHeight();
 
@@ -276,7 +276,7 @@ A.ImageViewer = A.Base.create(
          * @protected
          */
         _bindControls: function() {
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this._eventHandles.push(
                     this.get('controlPrevious').after('click', A.bind(this._onClickControl, this)),
                     this.get('controlNext').after('click', A.bind(this._onClickControl, this))
@@ -291,7 +291,7 @@ A.ImageViewer = A.Base.create(
          * @protected
          */
         _bindThumbnails: function() {
-            if (this._thumbnailsWidget && this._sources.length > 0) {
+            if (this._thumbnailsWidget && this._sources.length) {
                 this._eventHandles.push(
                     this._thumbnailsWidget.after('currentIndexChange', A.bind(this._afterThumbnailsIndexChange, this))
                 );
@@ -424,7 +424,7 @@ A.ImageViewer = A.Base.create(
         _onResponsive: function() {
             A.ImageViewer.superclass._onResponsive.apply(this, arguments);
 
-            if (this._sources.length > 0) {
+            if (this._sources.length) {
                 this.footerNode.setStyle('width', 0);
             }
         },

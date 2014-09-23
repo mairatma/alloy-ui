@@ -77,7 +77,7 @@ ImageViewerSlideshow.prototype = {
      * @protected
      */
     _afterSlideshowBindUI: function() {
-        if (this._sources.length > 0) {
+        if (this._sources.length) {
             this._bindPlayer();
         }
     },
@@ -89,7 +89,7 @@ ImageViewerSlideshow.prototype = {
      * @protected
      */
     _afterSlideshowRenderUI: function() {
-        if (this._sources.length > 0) {
+        if (this._sources.length) {
             this._renderPlayer();
         }
     },
@@ -132,7 +132,7 @@ ImageViewerSlideshow.prototype = {
      * @protected
      */
     _afterSlideshowShowPlayerChange: function() {
-        if (this._sources.length > 0) {
+        if (this._sources.length) {
             this._renderPlayer();
             this._syncShowPlayer();
             this._bindPlayer();
