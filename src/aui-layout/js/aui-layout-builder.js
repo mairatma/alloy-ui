@@ -4,13 +4,15 @@
  * @module aui-layout-builder
  */
 
-var CSS_LAYOUT_DRAG_HANDLE = A.getClassName('layout', 'drag', 'handle'),
+var CSS_ADD_COL = A.getClassName('layout', 'add', 'col'),
+    CSS_LAYOUT_DRAG_HANDLE = A.getClassName('layout', 'drag', 'handle'),
     CSS_LAYOUT_GRID = A.getClassName('layout', 'grid'),
     CSS_LAYOUT_RESIZING = A.getClassName('layout', 'resizing'),
-    SELECTOR_COL = '.col',
+    CSS_REMOVE_COL = A.getClassName('layout', 'remove', 'col'),
     MAX_NUMBER_OF_COLUMNS = 12,
     OFFSET_WIDTH = 'offsetWidth',
-    REGEX_WIDTH = /\d+\.*\d*/;
+    SELECTOR_COL = '.col',
+    SELECTOR_ROW = '.row';
 
 /**
  * A base class for Layout Builder.
@@ -24,6 +26,15 @@ var CSS_LAYOUT_DRAG_HANDLE = A.getClassName('layout', 'drag', 'handle'),
  * @constructor
  */
 A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
+
+    /**
+     * Button to add a col.
+     *
+     * @property addColButton
+     * @type {Node}
+     * @protected
+     */
+    addColButton: null,
 
     /**
      * Holds the drag handle node.
@@ -44,6 +55,15 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
     isDragHandleLocked: false,
 
     /**
+     * Button to remove a col.
+     *
+     * @property removeColButton
+     * @type {Node}
+     * @protected
+     */
+    removeColButton: null,
+
+    /**
      * Construction logic executed during LayoutBuilder instantiation. Lifecycle.
      *
      * @method initializer
@@ -56,12 +76,16 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
         layout.draw(container);
 
         this._createDragHandle();
+        this._createHelperButtons();
+
         container.unselectable();
 
         this._eventHandles = [
             container.delegate('mousedown', A.bind(this._onMouseDownEvent, this), '.' + CSS_LAYOUT_DRAG_HANDLE),
             container.delegate('mouseenter', A.bind(this._onMouseEnterEvent, this), SELECTOR_COL),
             container.delegate('mouseleave', A.bind(this._onMouseLeaveEvent, this), SELECTOR_COL),
+            container.delegate('click', A.bind(this._onMouseClickRemoveColEvent, this), '.' + CSS_REMOVE_COL),
+            container.delegate('click', A.bind(this._onMouseClickAddColEvent, this), '.' + CSS_ADD_COL),
             this.after('layoutChange', A.bind(this._afterLayoutChange, this))
         ];
 
@@ -132,6 +156,20 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
     },
 
     /**
+     * Calculates if current target has space to move into parent's row.
+     *
+     * @method _availableSpaceToMove
+     * @param {Node} col Node to check if next col has available space to decrease.
+     * @return {Number}
+     * @protected
+     */
+    _availableSpaceToMove: function(col) {
+        var nextCol = col.next().getData('layout-col');
+
+        return nextCol.get('size') - nextCol.get('minSize');
+    },
+
+    /**
      * Creates drag handle node.
      *
      * @method _createDragHandle
@@ -142,7 +180,18 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
     },
 
     /**
-     * Decreases target width.
+     * Creates remove col button.
+     *
+     * @method _createHelperButtons
+     * @protected
+     */
+    _createHelperButtons: function() {
+        this.addColButton = A.Node.create('<span>').addClass(CSS_ADD_COL + ' glyphicon glyphicon-plus');
+        this.removeColButton = A.Node.create('<span>').addClass(CSS_REMOVE_COL + ' glyphicon glyphicon-remove');
+    },
+
+    /**
+     * Decreases col width.
      *
      * @method _decreaseCol
      * @param {Node} target Node that will be decreased.
@@ -152,14 +201,39 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      */
     _decreaseCol: function(target, dragDifference) {
         var colWidth = this.get('container').get(OFFSET_WIDTH) / MAX_NUMBER_OF_COLUMNS,
-            nextClassNumber,
+            col = target.getData('layout-col'),
+            currentSize = col.get('size'),
+            minSize = col.get('minSize'),
+            nextSize,
             targetWidth = target.get(OFFSET_WIDTH);
 
-        nextClassNumber = Math.ceil((targetWidth - dragDifference) / colWidth);
-        nextClassNumber = nextClassNumber > 0 ? nextClassNumber : 1;
+        nextSize = Math.ceil((targetWidth - dragDifference) / colWidth);
 
-        target.getData('layout-col').set('size', nextClassNumber);
-        this.get('layout').draw(this.get('container'));
+        if (nextSize < minSize) {
+            nextSize = minSize;
+        }
+
+        if (!this._isBreakpoint(target, nextSize)) {
+            return;
+        }
+
+        if (nextSize < currentSize) {
+            col.set('size', nextSize);
+            this._increaseNextCol(target, currentSize - nextSize);
+        }
+    },
+
+    /**
+     * Decreases col width.
+     *
+     * @method _decreaseNextCol
+     * @param {Node} col Node that will be decreased.
+     * @param {Number} size Exact size to decrease.
+     * @protected
+     */
+    _decreaseNextCol: function(col, size) {
+        var nextCol = col.next().getData('layout-col');
+        nextCol.set('size', nextCol.get('size') - size);
     },
 
     /**
@@ -175,20 +249,6 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
     },
 
     /**
-     * Calculates the space already being used by the given column's parent row.
-     *
-     * @method _getUsedSpaceInParentRow
-     * @param {Node} col
-     * @return {Number}
-     * @protected
-     */
-     _getUsedSpaceInParentRow: function(col) {
-         var row = col.ancestor('.row');
-
-         return row.getData('layout-row').getSize();
-     },
-
-    /**
      * Calculates if current target has space to move into parent's row.
      *
      * @method _hasSpaceToMove
@@ -197,9 +257,10 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @protected
      */
     _hasSpaceToMove: function(col) {
-        var numberOfColumns = this._getUsedSpaceInParentRow(col);
+        var nextCol = col.next().getData('layout-col'),
+            nextColSize = nextCol.get('size');
 
-        return numberOfColumns < MAX_NUMBER_OF_COLUMNS;
+        return nextColSize > nextCol.get('minSize');
     },
 
     /**
@@ -212,40 +273,128 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @protected
      */
     _increaseCol: function(col, dragDifference) {
-        var colWidth = this.get('container').get(OFFSET_WIDTH) / MAX_NUMBER_OF_COLUMNS,
-            currentTargetColNumber = this._getColSize(col),
-            nextClassNumber,
-            numberOfUsedColumns = this._getUsedSpaceInParentRow(col),
-            availableColumns = MAX_NUMBER_OF_COLUMNS - numberOfUsedColumns;
+        var availableSpaceToMove = this._availableSpaceToMove(col),
+            colWidth = this.get('container').get(OFFSET_WIDTH) / MAX_NUMBER_OF_COLUMNS,
+            currentSize = this._getColSize(col),
+            difference,
+            nextSize;
 
-        nextClassNumber = Math.ceil((col.get(OFFSET_WIDTH) - dragDifference) / colWidth);
+        nextSize = Math.ceil((col.get(OFFSET_WIDTH) - dragDifference) / colWidth);
 
-        if ((nextClassNumber - currentTargetColNumber) + numberOfUsedColumns > MAX_NUMBER_OF_COLUMNS) {
-            nextClassNumber = currentTargetColNumber + availableColumns;
+        difference = nextSize - currentSize;
+
+        if (difference > availableSpaceToMove) {
+            nextSize = currentSize + availableSpaceToMove;
+            difference = availableSpaceToMove;
         }
 
-        col.getData('layout-col').set('size', nextClassNumber);
-        this.get('layout').draw(this.get('container'));
+        if (!this._isBreakpoint(col, nextSize)) {
+            return;
+        }
+
+        col.getData('layout-col').set('size', nextSize);
+        this._decreaseNextCol(col, difference);
     },
 
     /**
-     * Inserts a grid to the current node in order to visualize the columns area.
+     * Increases col width.
+     *
+     * @method _increaseNextCol
+     * @param {Node} col Node that will be increased.
+     * @param {Number} size Exact size to increase.
+     * @protected
+     */
+    _increaseNextCol: function(col, size) {
+        var nextCol = col.next().getData('layout-col');
+        nextCol.set('size', nextCol.get('size') + size);
+    },
+
+    /**
+     * Inserts a grid to the current row in order to visualize the possible breakpoints.
      *
      * @method _insertGrid
      * @param {Node} target Node in which the grid will be inserted.
      * @protected
      */
-    _insertGrid: function(target) {
-        var gridLine,
-            i,
-            targetColNumber = this._getColSize(target),
-            gridWidth = target.get(OFFSET_WIDTH) / targetColNumber;
+    _insertGrid: function(row) {
+        var breakpoints = this.get('breakpoints'),
+            gridLine,
+            gridWidth = row.get(OFFSET_WIDTH) / MAX_NUMBER_OF_COLUMNS;
 
-        for (i = 1; i < targetColNumber; i++) {
+        A.each(breakpoints, function(point) {
             gridLine = A.Node.create('<div>').addClass(CSS_LAYOUT_GRID);
-            gridLine.setStyle('left', gridWidth * i);
-            target.append(gridLine);
+            gridLine.setStyle('left', gridWidth * point);
+            row.append(gridLine);
+        });
+    },
+
+    /**
+     * Calculates if this col is inside a breakpoint.
+     *
+     * @method _isBreakpoint
+     * @param {Node} col Node in which the breakpoint will be calculated.
+     * @param {Node} size Size of the current col.
+     * @return {Boolean}
+     * @protected
+     */
+    _isBreakpoint: function(col, size) {
+        var breakpoints = this.get('breakpoints'),
+            totalSize = 0;
+
+        while (col.previous()) {
+            col = col.previous();
+
+            totalSize += col.getData('layout-col').get('size');
         }
+
+        totalSize += size;
+
+        return breakpoints.indexOf(totalSize) >= 0;
+    },
+
+    /**
+     * Calculates the space on the left side of a col.
+     *
+     * @method _leftAvailableSpace
+     * @param {Node} col
+     * @return {Number}
+     * @protected
+     */
+    _leftAvailableSpace: function(col) {
+        var width = col.get(OFFSET_WIDTH);
+
+        while (col.previous()) {
+            col = col.previous();
+            width += col.get(OFFSET_WIDTH);
+        }
+
+        return width;
+    },
+
+    /**
+     * Fires after click on add col button.
+     *
+     * @method _onMouseClickAddColEvent
+     * @param {EventFacade} event
+     * @protected
+     */
+    _onMouseClickAddColEvent: function(event) {
+        var row = event.target.ancestor(SELECTOR_ROW).getData('layout-row');
+        row.addCol(0);
+    },
+
+    /**
+     * Fires after click on delete col button.
+     *
+     * @method _onMouseClickRemoveColEvent
+     * @param {EventFacade} event
+     * @protected
+     */
+    _onMouseClickRemoveColEvent: function(event) {
+        var col = event.target.ancestor(),
+            row = col.ancestor().getData('layout-row');
+
+        row.removeCol(col.getData('layout-col'));
     },
 
     /**
@@ -260,17 +409,18 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
         var body = A.one('body'),
             clientX = event.clientX,
             col = event.target.ancestor(),
-            colWidth = Number(REGEX_WIDTH.exec(col.getStyle('width'))[0]);
+            leftAvailableSpace = this._leftAvailableSpace(col),
+            rightAvailableSpace = this._rightAvailableSpace(col);
 
         this.isDragHandleLocked = true;
 
-        this._insertGrid(col);
+        this._insertGrid(col.ancestor(SELECTOR_ROW));
 
         body.addClass(CSS_LAYOUT_RESIZING);
 
         body.once('mouseup', this._onMouseUpEvent, this, clientX, col);
 
-        this._mouseMoveEvent = body.on('mousemove', this._onMouseMove, this, clientX, colWidth);
+        this._mouseMoveEvent = body.on('mousemove', this._onMouseMove, this, clientX, leftAvailableSpace, rightAvailableSpace);
     },
 
     /**
@@ -281,8 +431,13 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @protected
      */
     _onMouseEnterEvent: function(event) {
-        if (!this.isDragHandleLocked) {
-            event.target.append(this.dragHandle);
+        var col = event.target;
+
+        col.append(this.removeColButton);
+        col.append(this.addColButton);
+
+        if (!this.isDragHandleLocked && col.next()) {
+            col.append(this.dragHandle);
         }
     },
 
@@ -296,6 +451,9 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
         if (!this.isDragHandleLocked) {
             this.dragHandle.remove();
         }
+
+        this.removeColButton.remove();
+        this.addColButton.remove();
     },
 
     /**
@@ -304,18 +462,29 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @method _onMouseMove
      * @protected
      */
-    _onMouseMove: function(event, clientX, colWidth) {
-        var difference = clientX - event.clientX,
+    _onMouseMove: function(event, clientX, leftAvailableSpace, rightAvailableSpace) {
+        var absDifference,
+            difference = clientX - event.clientX,
+            dragHandleWidth = this.dragHandle.get('offsetWidth'),
             rightPosition;
 
-        if (difference >= colWidth) {
-            rightPosition = colWidth + 'px';
-        }
-        else if (difference < colWidth && difference > 0) {
-            rightPosition = difference + 'px';
+        absDifference = Math.abs(difference);
+
+        if (difference < 0) {
+            if (absDifference <= rightAvailableSpace) {
+                rightPosition = difference + 'px';
+            }
+            else {
+                rightPosition = -rightAvailableSpace + 'px';
+            }
         }
         else {
-            rightPosition = 0;
+            if (difference <= leftAvailableSpace) {
+                rightPosition = (difference - dragHandleWidth) + 'px';
+            }
+            else {
+                rightPosition = (leftAvailableSpace - dragHandleWidth) + 'px';
+            }
         }
 
         this.dragHandle.setStyle('right', rightPosition);
@@ -331,7 +500,9 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @protected
      */
     _onMouseUpEvent: function(event, mouseDownClientX, col) {
-        var dragDifference = mouseDownClientX - event.clientX;
+        var container = this.get('container'),
+            dragDifference = mouseDownClientX - event.clientX,
+            layout = this.get('layout');
 
         this.dragHandle.setStyle('right', 0);
 
@@ -348,6 +519,7 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
             this._increaseCol(col, dragDifference);
         }
 
+        layout.draw(container);
         A.one('body').removeClass(CSS_LAYOUT_RESIZING);
     },
 
@@ -362,6 +534,24 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
         target.ancestor().all('.' + CSS_LAYOUT_GRID).remove();
     },
 
+    /**
+     * Calculates the space on the right side of a col.
+     *
+     * @method _rightAvailableSpace
+     * @param {Node} col
+     * @return {Number}
+     * @protected
+     */
+    _rightAvailableSpace: function(col) {
+        var width = 0;
+
+        while (col.next()) {
+            col = col.next();
+            width += col.get(OFFSET_WIDTH);
+        }
+
+        return width;
+    }
 }, {
     /**
      * Static property used to define the default attribute
@@ -372,6 +562,18 @@ A.LayoutBuilder = A.Base.create('layout-builder', A.Base, [], {
      * @static
      */
     ATTRS: {
+
+        /**
+         * Array of breakpoints.
+         *
+         * @attribute breakpoints
+         * @type {Array}
+         */
+        breakpoints: {
+            validator: A.Lang.isArray,
+            value: [3, 4, 6, 8, 9]
+        },
+
         /**
          * Node that that will be inserted the layout.
          *

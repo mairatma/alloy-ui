@@ -17,12 +17,12 @@ YUI.add('aui-layout-row-tests', function(Y) {
                 cols: [
                     col,
                     new Y.LayoutCol({
-                        size: 2,
-                        value: {content: 'foo'}
+                        size: 3,
+                        value: { content: 'foo' }
                     }),
                     new Y.LayoutCol({
-                        size: 2,
-                        value: {content: 'foo'}
+                        size: 5,
+                        value: { content: 'foo' }
                     })
                 ]
             });
@@ -46,9 +46,9 @@ YUI.add('aui-layout-row-tests', function(Y) {
         },
 
         'should calculate it\'s size based on col\'s size': function() {
-            var rowSize = this.layoutRow.getSize();
+            var rowSize = this.layoutRow._getSize(this.layoutRow.get('cols'));
 
-            Assert.areEqual(8, rowSize);
+            Assert.areEqual(12, rowSize);
         },
 
         'should add a col': function() {
@@ -131,6 +131,26 @@ YUI.add('aui-layout-row-tests', function(Y) {
             childNumber = row.get('cols').length;
 
             Assert.areEqual(3, childNumber);
+        },
+
+        'should be possible to create a row without passing a col': function() {
+            var row = new Y.LayoutRow();
+
+            Assert.isNotNull(row);
+        },
+
+        'should set cols even if them doesn\'t sum up 12 of size': function() {
+            var row = new Y.LayoutRow();
+            row.set('cols', [new Y.LayoutCol({ size: 4 })]);
+
+            Assert.areEqual(12, row._getSize(row.get('cols')));
+        },
+
+        'should not allow set cols if cols sum up more than 12 of size': function() {
+            var row = new Y.LayoutRow();
+            row.set('cols', [new Y.LayoutCol({ size: 12 }), new Y.LayoutCol({ size: 12 })]);
+
+            Assert.areEqual(12, row._getSize(row.get('cols')));
         }
     }));
 

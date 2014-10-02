@@ -48,16 +48,49 @@ A.LayoutCol = A.Base.create('layout-col', A.Base, [], {
     ATTRS: {
 
         /**
+         * Columns's maximum size.
+         *
+         * @attribute maxSize
+         * @type {Number}
+         */
+        maxSize: {
+            value: 12
+        },
+
+        /**
+         * Columns's minimum size.
+         *
+         * @attribute minSize
+         * @type {Number}
+         */
+        minSize: {
+            value: 3
+        },
+
+        /**
          * Columns's size, ranging from 1 to 12.
          *
          * @attribute size
          * @type {Number}
          */
         size: {
-            validator: function(val) {
-                return A.Lang.isNumber(val) && val >= 1 && val <= 12;
+            setter: function(val) {
+                var max = this.get('maxSize'),
+                    min = this.get('minSize');
+
+                if (val < min) {
+                    return min;
+                }
+                else if (val > max) {
+                    return max;
+                }
+                else {
+                    return val;
+                }
             },
-            value: 1
+            valueFn: function() {
+                return this.get('minSize');
+            }
         },
 
         /**
@@ -68,7 +101,8 @@ A.LayoutCol = A.Base.create('layout-col', A.Base, [], {
          * @type {Object}
          */
         value: {
-            validator: A.Lang.isObject
+            validator: A.Lang.isObject,
+            value: { content: 'Content' }
         }
     }
 });
