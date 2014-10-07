@@ -50,10 +50,10 @@ YUI.add('aui-form-builder-tests', function(Y) {
                 rows: [
                     new Y.LayoutRow()
                 ]
-            }))
+            }));
             Y.Assert.areEqual('none', Y.one('.form-builder-empty-layout').getStyle('display'));
 
-            formBuilder.set('layout', new Y.Layout())
+            formBuilder.set('layout', new Y.Layout());
             Y.Assert.areEqual('block', Y.one('.form-builder-empty-layout').getStyle('display'));
         },
 

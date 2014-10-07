@@ -96,7 +96,6 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [], {
      */
     syncUI: function() {
         var contentBox = this.get('contentBox'),
-            emptyLayout = contentBox.one('.' + CSS_FORM_BUILDER_EMPTY_LAYOUT),
             layout = this.get('layout');
 
         this.get('layout').draw(contentBox.one('.' + CSS_FORM_BUILDER_FIELD_LIST));
