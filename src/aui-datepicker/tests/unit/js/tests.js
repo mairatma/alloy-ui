@@ -19,7 +19,7 @@ YUI.add('aui-datepicker-tests', function(Y) {
 
                 datePicker = new Y.DatePicker({
                     on: {
-                        selectionChange: function(event) {
+                        selectionChange: function() {
                             selectionChangeCount++;
                         }
                     },
@@ -54,7 +54,7 @@ YUI.add('aui-datepicker-tests', function(Y) {
 
                 datePicker = new Y.DatePicker({
                     on: {
-                        selectionChange: function(event) {
+                        selectionChange: function() {
                             selectionChangeCount++;
                         }
                     },

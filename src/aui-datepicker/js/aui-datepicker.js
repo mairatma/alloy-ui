@@ -192,7 +192,10 @@ A.mix(DatePickerBase.prototype, {
                 month = dates[i].getMonth();
                 day = dates[i].getDate();
 
-                if (!hasKey(hashMapSelectedDates, year) || !hasKey(hashMapSelectedDates[year], month) || !hasKey(hashMapSelectedDates[year][month], day)) {
+                if (!hasKey(hashMapSelectedDates, year) ||
+                    !hasKey(hashMapSelectedDates[year], month) ||
+                    !hasKey(hashMapSelectedDates[year][month], day)) {
+
                     toSelect.push(dates[i]);
                 }
             }
