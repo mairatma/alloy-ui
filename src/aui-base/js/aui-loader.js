@@ -120,6 +120,12 @@ Y.mix(YUI.Env[Y.version].modules, {
         }
     },
     "aui-base-lang": {},
+    "aui-boolean-data-editor": {
+        "requires": [
+            "aui-classnamemanager",
+            "aui-data-editor"
+        ]
+    },
     "aui-button": {
         "use": [
             "aui-button-core"
@@ -244,6 +250,12 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "aui-css": {
         "type": "css"
+    },
+    "aui-data-editor": {
+        "requires": [
+            "base-build",
+            "node-base"
+        ]
     },
     "aui-datatable": {
         "use": [
@@ -564,87 +576,43 @@ Y.mix(YUI.Env[Y.version].modules, {
     },
     "aui-form-builder": {
         "requires": [
-            "aui-button",
-            "aui-collection",
-            "aui-form-builder-available-field",
-            "aui-form-builder-field",
-            "aui-form-builder-field-button",
-            "aui-form-builder-field-checkbox",
-            "aui-form-builder-field-fieldset",
-            "aui-form-builder-field-file-upload",
-            "aui-form-builder-field-multiple-choice",
-            "aui-form-builder-field-radio",
-            "aui-form-builder-field-select",
-            "aui-form-builder-field-text",
-            "aui-form-builder-field-textarea",
-            "aui-property-builder",
-            "aui-property-builder-settings",
-            "aui-sortable-list",
-            "aui-tabview",
-            "aui-tooltip-base",
-            "escape",
-            "transition"
+            "aui-modal",
+            "aui-layout",
+            "aui-form-builder-field-type",
+            "aui-form-builder-page-break"
         ],
         "skinnable": true
     },
-    "aui-form-builder-available-field": {
+    "aui-form-builder-field-base": {
         "requires": [
-            "aui-property-builder-available-field"
-        ]
-    },
-    "aui-form-builder-field": {
-        "requires": [
-            "panel",
-            "aui-datatype",
-            "aui-datatable-edit",
-            "aui-property-builder-field-support"
-        ],
-        "skinnable": true
-    },
-    "aui-form-builder-field-button": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-checkbox": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-fieldset": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-file-upload": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-multiple-choice": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-radio": {
-        "requires": [
-            "aui-form-builder-field"
-        ]
-    },
-    "aui-form-builder-field-select": {
-        "requires": [
-            "aui-form-builder-field"
+            "aui-classnamemanager",
+            "aui-modal",
+            "base",
+            "node-base"
         ]
     },
     "aui-form-builder-field-text": {
         "requires": [
-            "aui-form-builder-field"
-        ]
+            "aui-boolean-data-editor",
+            "aui-form-builder-field-base",
+            "aui-text-data-editor"
+        ],
+        "skinnable": true
     },
-    "aui-form-builder-field-textarea": {
+    "aui-form-builder-field-type": {
         "requires": [
-            "aui-form-builder-field"
-        ]
+            "base",
+            "node-base"
+        ],
+        "skinnable": true
+    },
+    "aui-form-builder-page-break": {
+        "requires": [
+            "aui-classnamemanager",
+            "base",
+            "node-base"
+        ],
+        "skinnable": true
     },
     "aui-form-validator": {
         "requires": [
@@ -783,6 +751,84 @@ Y.mix(YUI.Env[Y.version].modules, {
             "plugin",
             "querystring-stringify",
             "aui-component"
+        ]
+    },
+    "aui-layout": {
+        "requires": [
+            "aui-layout-col",
+            "aui-layout-row",
+            "aui-node-base",
+            "base-build"
+        ]
+    },
+    "aui-layout-builder": {
+        "requires": [
+            "aui-classnamemanager",
+            "aui-layout",
+            "aui-layout-builder-add-col",
+            "aui-layout-builder-add-row",
+            "aui-layout-builder-move-row",
+            "aui-layout-builder-remove-col",
+            "aui-layout-builder-remove-row",
+            "aui-layout-builder-resize-col",
+            "aui-node-base",
+            "base-build",
+            "node-event-delegate",
+            "node-screen",
+            "node-style"
+        ]
+    },
+    "aui-layout-builder-add-col": {
+        "requires": [
+            "node-base"
+        ]
+    },
+    "aui-layout-builder-add-row": {
+        "requires": [
+            "aui-node-base",
+            "base-build"
+        ]
+    },
+    "aui-layout-builder-move-row": {
+        "requires": [
+            "aui-node-base",
+            "base-build"
+        ],
+        "skinnable": true
+    },
+    "aui-layout-builder-remove-col": {
+        "requires": [
+            "node-base"
+        ]
+    },
+    "aui-layout-builder-remove-row": {
+        "requires": [
+            "aui-node-base",
+            "base-build"
+        ]
+    },
+    "aui-layout-builder-resize-col": {
+        "requires": [
+            "dd-constrain",
+            "dd-delegate",
+            "dd-drop-plugin",
+            "dd-proxy",
+            "event-mouseenter",
+            "node-base"
+        ],
+        "skinnable": true
+    },
+    "aui-layout-col": {
+        "requires": [
+            "aui-node-base",
+            "base-build"
+        ]
+    },
+    "aui-layout-row": {
+        "requires": [
+            "array-invoke",
+            "aui-node-base",
+            "base-build"
         ]
     },
     "aui-linkedset": {
@@ -1207,6 +1253,12 @@ Y.mix(YUI.Env[Y.version].modules, {
         ],
         "skinnable": true
     },
+    "aui-text-data-editor": {
+        "requires": [
+            "aui-classnamemanager",
+            "aui-data-editor"
+        ]
+    },
     "aui-text-data-unicode": {
         "requires": [
             "text"
@@ -1450,4 +1502,4 @@ Y.mix(YUI.Env[Y.version].modules, {
         ]
     }
 });
-YUI.Env[Y.version].md5 = 'd4acca9b0ed082d78ba0d16f1d30d01b';
+YUI.Env[Y.version].md5 = '4c5398a78dae275948791201e64e197f';
