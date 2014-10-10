@@ -55,6 +55,7 @@
     word-wrap: normal;
 }
 
+.yui3-tokeninput,
 .yui3-tokeninput-content,
 .yui3-tokeninput-input,
 .yui3-tokeninput-list {
