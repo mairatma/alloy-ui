@@ -29,8 +29,8 @@ YUI.add('module-tests', function(Y) {
 
             this.wait(
                 function() {
-                    var tokens = this.tokenInput.get('tokens');
-                    var token = tokens[0];
+                    var tokens = this.tokenInput.get('tokens'),
+                        token = tokens[0];
 
                     Y.Assert.areEqual(1, tokens.length);
                     Y.Assert.areEqual('Liferay', token);
@@ -44,7 +44,6 @@ YUI.add('module-tests', function(Y) {
             boundingBox.simulate('focus');
 
             boundingBox.one('input').val('Open Source');
-
             boundingBox.one('input').simulate('keydown', { keyCode: 13 });
 
             this.wait(
@@ -82,5 +81,6 @@ YUI.add('module-tests', function(Y) {
 
     Y.Test.Runner.add(suite);
 
-
-},'', { requires: [ 'node-event-simulate', 'test', 'aui-token-input' ] });
+},'', {
+    requires: ['node-event-simulate', 'test', 'aui-token-input']
+});
