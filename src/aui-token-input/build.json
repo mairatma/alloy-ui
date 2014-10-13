@@ -1,0 +1,10 @@
+{
+    "name": "aui-token-input",
+    "builds": {
+        "aui-token-input": {
+            "jsfiles": [
+                "js/aui-token-input.js"
+            ]
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "aui-token-input": {
+        "requires": [
+            "array-extras",
+            "aui-classnamemanager",
+            "aui-base",
+            "aui-component",
+            "event-focus",
+            "event-outside",
+            "event-valuechange",
+            "node-event-delegate",
+            "node-pluginhost",
+            "node-style",
+            "plugin"
+        ],
+        "skinnable": true
+    }
+}

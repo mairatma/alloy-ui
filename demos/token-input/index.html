@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AlloyUI - Token Input</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../build/aui-css/css/bootstrap.css">
+    <script src="../../build/aui/aui.js"></script>
+
+    <style>
+    pre {
+        word-wrap: normal;
+    }
+
+    .yui3-aclist-content {
+        -moz-box-shadow: 1px 1px 4px #888;
+        -webkit-box-shadow: 1px 1px 4px #888;
+        background: #fff;
+        border: 1px solid #afafaf;
+        box-shadow: 1px 1px 4px #888;
+    }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>AlloyUI - Token Input</h1>
+
+    <p>
+        This example demonstrates how to attach the node-tokeninput plugin to an input field to allow tokenized input, using commas as a delimiter. This is a fork of <a href="https://github.com/rgrove/">rgrove</a>&rsquo;s <a href="https://github.com/rgrove/node-tokeninput">node-tokeninput</a>. Design inspired by <a href="https://github.com/sliptree">sliptree</a>&rsquo;s <a href="http://sliptree.github.io/bootstrap-tokenfield/">tokenfield</a>.
+    </p>
+    <h3>Token Input</h3>
+
+<pre>
+YUI().use('aui-token-input', function (Y) {
+    Y.one('#tags').plug(Y.Plugin.TokenInput);
+});
+</pre>
+
+    <p>Enter some tags here, please.</p>
+
+    <div class="form-group">
+        <input class="form-control" type="text" id="tags" />
+    </div>
+
+    <h3>Token Input plugged with AutoComplete</h3>
+
+<pre>
+YUI().use('aui-token-input', 'autocomplete', 'autocomplete-filters', 'autocomplete-highlighters', function(Y) {
+    Y.one('#ac').plug(Y.Plugin.TokenInput).plug(Y.Plugin.AutoComplete);
+
+    // List of tags to use for completion, just for the demo.
+    var tags = [
+        'apple', 'banana', 'cherry', 'date', 'fig', 'grapefruit', 'jujube',
+        'kumquat', 'lemon', 'mango', 'nectarine', 'orange', 'pineapple',
+        'raspberry', 'strawberry', 'tangerine', 'watermelon'
+    ];
+
+    // Attach the node-tokeninput and autocomplete plugins.
+    inputNode.plug(Y.Plugin.TokenInput).plug(Y.Plugin.AutoComplete, {
+        resultFilters: 'charMatch',
+        resultHighlighter: 'charMatch',
+        source: tags
+    });
+});
+</pre>
+
+    <div class="form-group">
+        <input class="form-control" type="text" id="ac" />
+    </div>
+</div>
+
+
+<script>
+    YUI({ filter:'raw' }).use('aui-token-input', function(Y) {
+        Y.one('#tags').plug(Y.Plugin.TokenInput);
+    });
+</script>
+
+<script>
+    YUI({ filter:'raw' }).use('aui-token-input', 'autocomplete-base', 'autocomplete', 'autocomplete-filters', 'autocomplete-highlighters', function(Y) {
+        // List of tags to use for completion, just for the demo.
+        var tags = [
+            'apple', 'banana', 'cherry', 'date', 'fig', 'grapefruit', 'jujube',
+            'kumquat', 'lemon', 'mango', 'nectarine', 'orange', 'pineapple',
+            'raspberry', 'strawberry', 'tangerine', 'watermelon'
+        ];
+
+        // Attach the node-tokeninput and autocomplete plugins.
+        Y.one('#ac').plug(Y.Plugin.TokenInput).plug(Y.Plugin.AutoComplete, {
+            resultFilters: 'charMatch',
+            resultHighlighter: 'charMatch',
+            source: tags
+        });
+    });
+</script>
+</body>
+</html>
