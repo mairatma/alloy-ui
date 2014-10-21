@@ -1,0 +1,74 @@
+.yui3-tokeninput-hidden {
+    left: -10000px;
+    position: absolute;
+}
+
+.yui3-tokeninput,
+.yui3-tokeninput-content,
+.yui3-tokeninput-item,
+.yui3-tokeninput-list {
+    display: inline-block;
+    vertical-align: bottom;
+    zoom: 1;
+}
+
+.yui3-tokeninput-item .close {
+    display: inline-block;
+    float: none;
+    font-family: Arial;
+    font-size: 1em;
+    height: 100%;
+    margin-left: 5px;
+    padding-right: 4px;
+}
+
+.yui3-tokeninput-input {
+    -webkit-appearance: none; /* prevents inner shadow on iOS */
+    border: 0;
+    min-width: 50px;
+    outline: none;
+    padding-left: 13px;
+    padding-top: 5px;
+}
+
+.yui3-tokeninput-list {
+    cursor: text;
+    height: auto;
+    list-style: none;
+    margin-bottom: 0;
+    overflow: hidden;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 2px;
+}
+
+.yui3-tokeninput-token {
+    border-radius: 3px;
+    border: 1px solid;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 5px;
+    padding-left: .5em;
+    vertical-align: baseline;
+    white-space: normal;
+    word-break: break-word;
+    word-wrap: normal;
+}
+
+.yui3-tokeninput,
+.yui3-tokeninput-content,
+.yui3-tokeninput-input,
+.yui3-tokeninput-list {
+    width: 100%;
+}
+
+.yui3-tokeninput.form-control {
+    height: auto;
+    min-height: 34px;
+    padding-bottom: 0px;
+    padding: 0;
+}
+
+.yui3-tokeninput-editable {
+    vertical-align: baseline;
+}
