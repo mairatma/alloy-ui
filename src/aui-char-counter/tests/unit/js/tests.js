@@ -116,14 +116,6 @@ YUI.add('aui-char-counter-tests', function(Y) {
             Y.Assert.areEqual('12345', this.textarea.val());
         },
 
-        'should ignore calls if input is not defined': function() {
-            this.inputCharCounter = new Y.CharCounter({
-                maxLength: 5
-            });
-
-            Y.Assert.isFalse(this.inputCharCounter.checkLength());
-        },
-
         'should render remaining char count': function() {
             this.inputCharCounter = new Y.CharCounter({
                 input: this.input,
@@ -238,6 +230,30 @@ YUI.add('aui-char-counter-tests', function(Y) {
             this.changeInputContent('123456');
             Y.Assert.areEqual('123456', this.input.val());
             Y.Assert.areEqual('123456', this.textarea.val());
+        },
+
+        'should treat new lines in textareas as 2 characters': function() {
+            this.inputCharCounter = new Y.CharCounter({
+                input: this.input,
+                maxLength: 10
+            });
+
+            this.textareaCharCounter = new Y.CharCounter({
+                input: this.textarea,
+                maxLength: 10
+            });
+
+            this.changeInputContent('12345\n67890');
+            Y.Assert.areEqual('1234567890', this.input.val());
+            Y.Assert.areEqual('12345\n678', this.textarea.val());
+            Y.Assert.areEqual(10, this.input.val().length);
+            Y.Assert.areEqual(9, this.textarea.val().length);
+
+            this.changeInputContent('12345\r\n67890');
+            Y.Assert.areEqual('1234567890', this.input.val());
+            Y.Assert.areEqual('12345\n678', this.textarea.val());
+            Y.Assert.areEqual(10, this.input.val().length);
+            Y.Assert.areEqual(9, this.textarea.val().length);
         }
     }));
 
