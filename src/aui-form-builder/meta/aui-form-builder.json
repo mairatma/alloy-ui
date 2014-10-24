@@ -37,6 +37,23 @@
         ]
     },
 
+    "aui-form-builder-field-grid": {
+        "requires": [
+            "aui-boolean-data-editor",
+            "aui-form-builder-field-sentence",
+            "aui-options-data-editor"
+        ]
+    },
+
+    "aui-form-builder-field-scale": {
+        "requires": [
+            "aui-boolean-data-editor",
+            "aui-form-builder-field-sentence",
+            "aui-scale-data-editor"
+        ],
+        "skinnable": true
+    },
+
     "aui-form-builder-field-sentence": {
         "requires": [
             "aui-form-builder-field-base",

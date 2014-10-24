@@ -22,7 +22,7 @@ var CSS_EDITOR = A.getClassName('options', 'data', 'editor'),
  * @constructor
  */
 A.OptionsDataEditor = A.Base.create('options-data-editor', A.DataEditor, [], {
-    TPL_EDITOR: '<div class="' + CSS_EDITOR + '">' +
+    TPL_EDITOR: '<div class="' + CSS_EDITOR + '"><label></label>' +
         '<div class="' + CSS_EDITOR_OPTIONS + '"></div>' +
         '<button class="' + CSS_EDITOR_ADD + '">Add Option</button></div>',
     TPL_EDITOR_OPTION: '<div class="' + CSS_EDITOR_OPTION + '">' +
@@ -43,6 +43,7 @@ A.OptionsDataEditor = A.Base.create('options-data-editor', A.DataEditor, [], {
         node.delegate('click', A.bind(this._onClickRemoveButton, this), '.' + CSS_EDITOR_OPTION_REMOVE);
 
         this._setUpDrag();
+        this._uiSetLabel(this.get('label'));
     },
 
     /**
@@ -57,6 +58,16 @@ A.OptionsDataEditor = A.Base.create('options-data-editor', A.DataEditor, [], {
         optionsContainer.append(A.Node.create(A.Lang.sub(this.TPL_EDITOR_OPTION, {
             text: ''
         })));
+    },
+
+    /**
+     * Fired after the `label` attribute is set.
+     *
+     * @method _afterLabelChange
+     * @protected
+     */
+    _afterLabelChange: function() {
+        this._uiSetLabel(this.get('label'));
     },
 
     /**
@@ -169,6 +180,17 @@ A.OptionsDataEditor = A.Base.create('options-data-editor', A.DataEditor, [], {
             }));
             optionsContainer.append(optionNode);
         });
+    },
+
+    /**
+     * Updates the ui according to the value of the `label` attribute.
+     *
+     * @method _uiSetLabel
+     * @param {String} label
+     * @protected
+     */
+    _uiSetLabel: function(label) {
+        return this.get('node').one('label').set('text', label);
     }
 }, {
     /**
@@ -190,6 +212,17 @@ A.OptionsDataEditor = A.Base.create('options-data-editor', A.DataEditor, [], {
         editedValue: {
             getter: '_getEditedValue',
             value: []
+        },
+
+        /**
+         * The label to be used by this boolean editor.
+         *
+         * @attribute label
+         * @default ''
+         * @type String
+         */
+        label: {
+            value: ''
         },
 
         /**

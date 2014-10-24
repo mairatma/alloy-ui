@@ -23,6 +23,12 @@
         ],
         "skinnable": true
     },
+    "aui-scale-data-editor": {
+        "requires": [
+            "aui-classnamemanager",
+            "aui-data-editor"
+        ]
+    },
     "aui-text-data-editor": {
         "requires": [
             "aui-classnamemanager",
