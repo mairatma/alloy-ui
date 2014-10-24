@@ -14,7 +14,7 @@ YUI.add('aui-datepicker-tests', function(Y) {
         },
 
         'selectionChange event should only fire when selection changes': function() {
-        	var selectionChangeCount = 0,
+            var selectionChangeCount = 0,
                 trigger = Y.one('#trigger'),
 
                 datePicker = new Y.DatePicker({
