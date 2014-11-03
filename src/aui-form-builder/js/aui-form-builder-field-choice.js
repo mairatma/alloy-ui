@@ -89,7 +89,9 @@ A.FormBuilderFieldChoice = A.Base.create('form-builder-field-choice', A.FormBuil
         this._settings.push(
             {
                 attrName: 'options',
-                editor: new A.OptionsDataEditor()
+                editor: new A.OptionsDataEditor({
+                    required: true
+                })
             },
             {
                 attrName: 'otherOption',
