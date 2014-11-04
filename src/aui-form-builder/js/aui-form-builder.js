@@ -145,6 +145,8 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
             boundingBox.one('.' + CSS_HEADER_BACK).on('click', this._onClickHeaderBack, this),
             this._menu.after('itemSelected', A.bind(this._afterItemSelected, this))
         ];
+
+        this._updateUniqueFieldType();
     },
 
     /**
@@ -178,6 +180,28 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
         }
 
         (new A.EventHandle(this._eventHandles)).detach();
+    },
+
+    /**
+     * Check all Field created if there is a someone of the same type
+     * of the parameter.
+     *
+     * @method hasFieldType
+     * @param {Object} fieldType
+     * @protected
+     */
+    hasFieldType: function(fieldType) {
+        var isFoundField = false;
+
+        A.Array.each(this.get('layout').get('rows'), function (row) {
+            A.Array.each(row.get('cols'), function (col) {
+                if (col.get('value') && col.get('value').constructor === fieldType.get('fieldClass')) {
+                    isFoundField = true;
+                }
+            });
+        });
+
+        return isFoundField;
     },
 
     /**
@@ -368,6 +392,8 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
 
         event.prevVal.removeTarget(this);
         event.newVal.addTarget(this);
+
+        this._updateUniqueFieldType();
     },
 
     /**
@@ -378,6 +404,8 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
      */
     _afterLayoutColsChange: function() {
         this._renderEmptyColumns();
+
+        this._updateUniqueFieldType();
     },
 
     /**
@@ -389,6 +417,8 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
      */
     _afterLayoutColValueChange: function(event) {
         var col = event.target;
+
+        this._updateUniqueFieldType();
 
         if (A.instanceOf(event.newVal, A.FormBuilderFieldBase)) {
             col.set('movableContent', true);
@@ -410,6 +440,8 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
     _afterLayoutRowsChange: function() {
         this._syncLayoutRows();
         this._updatePageBreaks();
+
+        this._updateUniqueFieldType();
     },
 
     /**
@@ -850,6 +882,22 @@ A.FormBuilder  = A.Base.create('form-builder', A.Widget, [A.FormBuilderLayoutBui
                 pageBreak.set('index', index++);
                 pageBreak.set('quantity', quantity);
             }
+        });
+    },
+
+    /**
+     * Enable or disable unique FieldTypes based on created Fields. 
+     *
+     * @method _updateUniqueFieldType
+     * @protected
+     */
+    _updateUniqueFieldType: function() {
+        var instance = this;
+
+        A.Array.each(instance.get('fieldTypes'), function (fieldType) {
+            if (fieldType.get('unique')) {
+                fieldType.set('disabled', instance.hasFieldType(fieldType));
+            } 
         });
     }
 }, {
