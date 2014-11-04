@@ -896,6 +896,141 @@ YUI.add('aui-form-builder-tests', function(Y) {
             Y.one('.form-builder-field-toolbar-edit').simulate('click');
 
             Y.Assert.areEqual(Y.one('.modal-header').getHTML(), 'Text');
+        },
+
+        'should 46': function() {
+            var formBuilderModal;
+
+            this.createFormBuilder({
+                fieldTypes: [{
+                    fieldClass: Y.FormBuilderFieldSentence,
+                    unique: true
+                }]
+            });
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isTrue(Y.one('.field-type').hasClass('field-type-disabled'));
+
+            formBuilderModal = Y.one('.form-builder-modal');
+            formBuilderModal.one('.close').simulate('mousemove');
+            formBuilderModal.one('.close').simulate('click');
+
+            Y.one('.form-builder-field-configuration').simulate('click');
+            Y.one('.form-builder-field-toolbar-remove').simulate('click');
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isFalse(Y.one('.field-type').hasClass('field-type-disabled'));
+        },
+
+        'should disabled adding unique field already used when set a new layout': function() {
+            var formBuilderModal;
+
+            this.createFormBuilder({
+                fieldTypes: [{
+                    fieldClass: Y.FormBuilderFieldText,
+                    unique: true
+                }]
+            });
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isFalse(Y.one('.field-type').hasClass('field-type-disabled'));
+
+            formBuilderModal = Y.one('.form-builder-modal');
+            formBuilderModal.one('.close').simulate('mousemove');
+            formBuilderModal.one('.close').simulate('click');
+
+            this._formBuilder.set('layout', 
+                new Y.Layout({
+                    rows: [
+                        new Y.LayoutRow({
+                            cols: [
+                                new Y.LayoutCol({
+                                    size: 4,
+                                    value: new Y.FormBuilderFieldText({
+                                        help: 'I need somebody',
+                                        title: 'Duque'
+                                    })
+                                })
+                            ]
+                        })
+                    ]
+                })
+            );
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isTrue(Y.one('.field-type').hasClass('field-type-disabled'));
+        },
+
+        'should disabled adding unique field already used when set a new column': function() {
+            var formBuilderModal;
+
+            this.createFormBuilder({
+                fieldTypes: [{
+                    fieldClass: Y.FormBuilderFieldText,
+                    unique: true
+                }]
+            });
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isFalse(Y.one('.field-type').hasClass('field-type-disabled'));
+
+            formBuilderModal = Y.one('.form-builder-modal');
+            formBuilderModal.one('.close').simulate('mousemove');
+            formBuilderModal.one('.close').simulate('click');
+
+            this._formBuilder.get('layout').set('rows', 
+                [
+                    new Y.LayoutRow({
+                        cols: [
+                            new Y.LayoutCol({
+                                size: 4,
+                                value: new Y.FormBuilderFieldText({
+                                    help: 'not just anybody',
+                                    title: 'Monarch'
+                                })
+                            })
+                        ]
+                    })
+                ]
+            );
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isTrue(Y.one('.field-type').hasClass('field-type-disabled'));
+        },
+
+        'should disabled adding unique field already used when set a new row': function() {
+            var formBuilderModal;
+
+            this.createFormBuilder({
+                fieldTypes: [{
+                    fieldClass: Y.FormBuilderFieldText
+                }]
+            });
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isFalse(Y.one('.field-type').hasClass('field-type-disabled'));
+
+            formBuilderModal = Y.one('.form-builder-modal');
+            formBuilderModal.one('.close').simulate('mousemove');
+            formBuilderModal.one('.close').simulate('click');
+
+            this._formBuilder.set('fieldTypes', [{
+                    fieldClass: Y.FormBuilderFieldText,
+                    unique: true
+                }]);
+
+            this._formBuilder.get('layout').get('rows')[1].set('cols', [
+                new Y.LayoutCol({
+                    size: 12,
+                    value: new Y.FormBuilderFieldText({
+                        help: 'not just anybody',
+                        title: 'Monarch'
+                    })
+                })
+            ]);
+
+            this._formBuilder.showFieldsPanel();
+            Y.Assert.isTrue(Y.one('.field-type').hasClass('field-type-disabled'));
         }
     }));
 
