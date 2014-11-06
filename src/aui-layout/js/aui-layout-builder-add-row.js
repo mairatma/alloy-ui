@@ -4,12 +4,16 @@
  * @module aui-layout-add-row
  */
 
-var CSS_ADD_ROW_AREA = A.getClassName('layout', 'builder', 'add', 'row', 'area'),
+var CSS_ADD_ROW = A.getClassName('layout', 'builder', 'add', 'row'),
+    CSS_ADD_ROW_AREA = A.getClassName('layout', 'builder', 'add', 'row', 'area'),
+    CSS_ADD_ROW_SMARTPHONE_AREA = A.getClassName('layout', 'builder', 'add', 'row', 'smartphone', 'area'),
     CSS_ADD_ROW_AREA_FIXED = A.getClassName('layout', 'builder', 'add', 'row', 'area', 'fixed'),
     CSS_ADD_ROW_CHOOSE_ROW = A.getClassName('layout', 'builder', 'add', 'row', 'choose', 'row'),
 
-    TPL_ADD_ROW_AREA = '<div class="' + CSS_ADD_ROW_AREA + ' ' + CSS_ADD_ROW_AREA_FIXED + '"></div>',
-    TPL_ADD_ROW_CHOOSE_ROW = '<div class="' + CSS_ADD_ROW_CHOOSE_ROW + '" tabindex="6"></div>';
+    TPL_ADD_ROW_AREA = '<div class="' + [CSS_ADD_ROW_AREA, CSS_ADD_ROW_AREA_FIXED, CSS_ADD_ROW].join(' ') + '"></div>',
+    TPL_ADD_ROW_CHOOSE_ROW = '<div class="' + CSS_ADD_ROW_CHOOSE_ROW + '" tabindex="6"></div>',
+    TPL_ADD_ROW_SMARTPHONE = '<div class="' + [CSS_ADD_ROW, CSS_ADD_ROW_SMARTPHONE_AREA].join(' ') +
+        '"><div class="layout-builder-add-row-smartphone"></div><div>Add Field</div></div>';
 
 /**
  * A base class for Layout Add Row.
@@ -49,11 +53,13 @@ LayoutBuilderAddRow.prototype = {
      */
     initializer: function() {
         this._addRowArea = this._createAddRowArea();
+        this._addRowAreaForSmartphone = this._createAddRowAreaForSmartphone();
 
         this._bodyNode = A.one('body');
 
         this._eventHandles.push(
-            this.after('enableAddRowsChange', this._afterEnableAddRowsChange)
+            this.after('enableAddRowsChange', this._afterEnableAddRowsChange),
+            this.after('columnModeChange', A.bind(this._afterAddRowColumnModeChange, this))
         );
 
         this._uiSetEnableAddRows(this.get('enableAddRows'));
@@ -70,17 +76,47 @@ LayoutBuilderAddRow.prototype = {
     },
 
     /**
+     * Adds the appropriate add row area to container.
+     *
+     * @method _addAppropriateAddRowArea
+     * @protected
+     */
+    _addAppropriateAddRowArea: function() {
+        var container;
+
+        container = this.get('container');
+
+        if (this._isColumnModeEnabled) {
+            this._addRowAreaForSmartphone.remove();
+            container.append(this._addRowArea);
+        }
+        else {
+            this._addRowArea.remove();
+            container.append(this._addRowAreaForSmartphone);
+        }
+    },
+
+    /**
      * Add a row to layout.
      *
      * @method _addRow
-     * @param {EventFacace} event
+     * @param {Node} button
      * @protected
      */
-    _addRow: function(event) {
-        var button = event.target,
-            numberOfCols = button.getData('numberOfCols');
+    _addRow: function(button) {
+        var numberOfCols = button.getData('numberOfCols');
 
         this.get('layout').addRowWithSpecifiedColNumber(numberOfCols);
+    },
+
+    /**
+     * Fired after `columnModeChange` changes.
+     *
+     * @method _afterAddRowColumnModeChange
+     * @protected
+     */
+    _afterAddRowColumnModeChange: function() {
+        this._uiSetEnableAddRows(this.get('enableAddRows'));
     },
 
     /**
@@ -111,7 +147,7 @@ LayoutBuilderAddRow.prototype = {
         });
 
         this._addRowsEventHandles = [
-            container.delegate('click', A.bind(this._onMouseClickAddRowEvent, this), '.' + CSS_ADD_ROW_AREA),
+            container.delegate('click', A.bind(this._onMouseClickAddRowEvent, this), '.' + CSS_ADD_ROW),
             container.delegate('key', A.bind(this._onKeyPressAddRowEvent, this), 'press:13', '.' + CSS_ADD_ROW_AREA),
         ];
     },
@@ -144,6 +180,20 @@ LayoutBuilderAddRow.prototype = {
     },
 
     /**
+     * Creates the area to add new row for smartphone.
+     *
+     * @method _createAddRowAreaForSmartphone
+     * @protected
+     */
+    _createAddRowAreaForSmartphone: function() {
+        var rowArea = A.Node.create(TPL_ADD_ROW_SMARTPHONE);
+
+        rowArea.setData('numberOfCols', 1);
+
+        return rowArea;
+    },
+
+    /**
      * Fired on `key:press` event for the add row button.
      *
      * @method _onKeyPressAddRowEvent
@@ -151,7 +201,7 @@ LayoutBuilderAddRow.prototype = {
      * @protected
      */
     _onKeyPressAddRowEvent: function(event) {
-        this._addRow(event);
+        this._addRow(event.target);
     },
 
     /**
@@ -162,7 +212,18 @@ LayoutBuilderAddRow.prototype = {
      * @protected
      */
     _onMouseClickAddRowEvent: function(event) {
-        this._addRow(event);
+        this._addRow(event.target);
+    },
+
+    /**
+     * Removes current add row template.
+     *
+     * @method _removeAddRowTemplate
+     * @protected
+     */
+    _removeAddRowTemplate: function() {
+        this._addRowArea.remove();
+        this._addRowAreaForSmartphone.remove();
     },
 
     /**
@@ -194,12 +255,12 @@ LayoutBuilderAddRow.prototype = {
      */
     _uiSetEnableAddRows: function(enableAddRows) {
         if (enableAddRows) {
-            this.get('container').append(this._addRowArea);
+            this._addAppropriateAddRowArea();
             this._bindAddRowEvents();
             this._setAddRowAreaPosition();
         }
         else {
-            this._addRowArea.remove();
+            this._removeAddRowTemplate();
             this._unbindAddRowEvents();
         }
     },
