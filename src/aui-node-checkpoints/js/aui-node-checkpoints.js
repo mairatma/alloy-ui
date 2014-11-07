@@ -12,10 +12,23 @@ var isBody = function(node) {
     return (node === BODY);
 };
 
+/**
+ * A base class for `A.Node.Checkpoint`.
+ *
+ * @class A.Node.Checkpoint
+ * @constructor
+ */
 var Checkpoint = function() {
     this.init.apply(this, arguments);
 };
 
+/**
+ * Static object containing deafult values for A.Node.Checkpoint.
+ *
+ * @property DEFAULTS
+ * @type Object
+ * @static
+ */
 Checkpoint.DEFAULTS = {
     axis: 'vertical',
     enabled: true,
@@ -23,6 +36,15 @@ Checkpoint.DEFAULTS = {
     offset: 0
 };
 
+/**
+ * Init lifecycle method, invoked during construction. Sets up attributes
+ * and binds events.
+ *
+ * @method init
+ * @param {Node} node Node to be used as checkpoint.
+ * @param {Function} callback Callback function to execute when the checkpoint is triggered.
+ * @param {Object} options Object containing options for the checkpoint.
+ */
 Checkpoint.prototype.init = function(node, callback, options) {
     var instance = this;
 
@@ -48,6 +70,11 @@ Checkpoint.prototype.init = function(node, callback, options) {
     instance._handles = [instance._resizeHandler, instance._scrollHandler];
 };
 
+/**
+ * Binds refresh checkpoint method to the resize/resize:end events.
+ *
+ * @method bindResizeUI
+ */
 Checkpoint.prototype.bindResizeUI = function() {
     var instance = this;
 
@@ -67,6 +94,11 @@ Checkpoint.prototype.bindResizeUI = function() {
     instance._resizeHandler = resizeHandler;
 };
 
+/**
+ * Sets up scoll event handlers depending on axis and triggerAtTheEnd.
+ *
+ * @method bindScrollUI
+ */
 Checkpoint.prototype.bindScrollUI = function() {
     var instance = this;
 
@@ -106,6 +138,11 @@ Checkpoint.prototype.bindScrollUI = function() {
     instance._scrollHandler = scrollHandler;
 };
 
+/**
+ * Checks if the checkpoint node has been crossed.
+ *
+ * @method _crossed
+ */
 Checkpoint.prototype._crossed = function() {
     var instance = this;
 
@@ -118,6 +155,11 @@ Checkpoint.prototype._crossed = function() {
     return crossed;
 };
 
+/**
+ * Gets the direction of the scroll based on the scrollEvent.
+ *
+ * @method _getEventScrollDirection
+ */
 Checkpoint.prototype._getEventScrollDirection = function() {
     var instance = this;
 
@@ -141,18 +183,33 @@ Checkpoint.prototype._getEventScrollDirection = function() {
     return direction;
 };
 
+/**
+ * Destroy lifecycle method. Invokes destructors for the class hierarchy.
+ *
+ * @method destroy
+ */
 Checkpoint.prototype.destroy = function() {
     var instance = this;
 
     A.Array.invoke(instance._handles, 'detach');
 };
 
+/**
+ * Disables the node checkpoint.
+ *
+ * @method disable
+ */
 Checkpoint.prototype.disable = function() {
     var instance = this;
 
     instance._enabled = false;
 };
 
+/**
+ * Enables the node checkpoint.
+ *
+ * @method enable
+ */
 Checkpoint.prototype.enable = function() {
     var instance = this;
 
@@ -161,24 +218,49 @@ Checkpoint.prototype.enable = function() {
     instance.refresh();
 };
 
+/**
+ * Gets the context associated with the node.
+ *
+ * @method getContext
+ * @return {Object} Context object
+ */
 Checkpoint.prototype.getContext = function() {
     var instance = this;
 
     return instance._context;
 };
 
+/**
+ * Gets the node being used as the trigger for the checkpoint.
+ *
+ * @method getNode
+ * @return {Node}
+ */
 Checkpoint.prototype.getNode = function() {
     var instance = this;
 
     return instance._node;
 };
 
+/**
+ * Gets the offset associated with the checkpoint.
+ *
+ * @method getOffset
+ * @return {Number}
+ */
 Checkpoint.prototype.getOffset = function() {
     var instance = this;
 
     return instance._offset;
 };
 
+/**
+ * Checks if the checkpoint has been reached within
+ * the scroll context.
+ *
+ * @method reachedCheckpoint
+ * @return {Boolean}
+ */
 Checkpoint.prototype.reachedCheckpoint = function() {
     var instance = this;
 
@@ -189,6 +271,12 @@ Checkpoint.prototype.reachedCheckpoint = function() {
     return (scrollPosition >= triggerPosition);
 };
 
+/**
+ * Refreshes the trigger position and checks if it has been
+ * reached.
+ *
+ * @method refresh
+ */
 Checkpoint.prototype.refresh = function() {
     var instance = this;
 
@@ -199,12 +287,25 @@ Checkpoint.prototype.refresh = function() {
     instance._reachedCheckpoint = instance.reachedCheckpoint();
 };
 
+/**
+ * Sets the offset for the node.
+ *
+ * @method setOffset
+ * @param {Number} offset Represents the offset to be used when calculating node position.
+ */
 Checkpoint.prototype.setOffset = function(offset) {
     var instance = this;
 
     instance._offset = offset;
 };
 
+/**
+ * Gets the latest scroll position based on the axis and
+ * scroll event.
+ *
+ * @method _getScrollPosition
+ * @return {Number} Ending position of the scroll event.
+ */
 Checkpoint.prototype._getScrollPosition = function() {
     var instance = this;
 
@@ -213,6 +314,12 @@ Checkpoint.prototype._getScrollPosition = function() {
     return (instance._axis === 'vertical') ? scrollEvent.scrollTop : scrollEvent.scrollLeft;
 };
 
+/**
+ * Gets the current trigger position.
+ *
+ * @method _getTriggerPosition
+ * @return {Number} Number representing trigger position based on axis.
+ */
 Checkpoint.prototype._getTriggerPosition = function() {
     var instance = this;
 
@@ -237,6 +344,11 @@ Checkpoint.prototype._getTriggerPosition = function() {
     return triggerPosition;
 };
 
+/**
+ * Executes the provided callback method.
+ *
+ * @method _triggerCallback
+ */
 Checkpoint.prototype._triggerCallback = function() {
     var instance = this;
 
@@ -245,10 +357,23 @@ Checkpoint.prototype._triggerCallback = function() {
     instance._callback(direction);
 };
 
-var Context = function(config) {
+/**
+ * A base class for `Context`.
+ *
+ * @class Context
+ * @constructor
+ */
+var Context = function() {
     Context.superclass.constructor.apply(this, arguments);
 };
 
+/**
+ * Gets a Context instance based on node or creates a new
+ * Context if none exists.
+ *
+ * @param {Object} options Object containing options for Context.
+ * @method get
+ */
 Context.get = function(options) {
     options = options || {};
 
@@ -267,10 +392,24 @@ Context.get = function(options) {
     return context;
 };
 
+/**
+ * Gets a Context instance based on node or creates a new
+ * Context if none exists.
+ *
+ * @param {String} id Id of the node Belonging to the Context.
+ * @method getById
+ */
 Context.getById = function(id) {
     return MAP_CONTEXTS[id];
 };
 
+/**
+ * Static object containing deafult values for Context.
+ *
+ * @property DEFAULTS
+ * @type Object
+ * @static
+ */
 Context.DEFAULTS = {
     enabled: true,
     node: BODY,
@@ -280,6 +419,13 @@ Context.DEFAULTS = {
 A.extend(
     Context,
     A.Base, {
+        /**
+         * Init lifecycle method, invoked during construction. Sets up attributes
+         * and binds events.
+         *
+         * @method init
+         * @param {Object} options Object containing options for the Context.
+         */
         init: function(options) {
             var instance = this;
 
@@ -291,6 +437,11 @@ A.extend(
             instance.bindUI();
         },
 
+        /**
+         * Binds the UI scroll events.
+         *
+         * @method bindUI
+         */
         bindUI: function() {
             var instance = this;
 
@@ -335,24 +486,44 @@ A.extend(
             instance._handles = [scrollHandler, scrollBottomHandler, scrollRightHandler];
         },
 
+        /**
+         * Destroy lifecycle method. Invokes destructors for the class hierarchy.
+         *
+         * @method destroy
+         */
         destroy: function() {
             var instance = this;
 
             A.Array.invoke(instance._handles, 'detach');
         },
 
+        /**
+         * Enables the Context.
+         *
+         * @method enable
+         */
         enable: function() {
             var instance = this;
 
             instance._enabled = true;
         },
 
+        /**
+         * Disables the Context.
+         *
+         * @method disable
+         */
         disable: function() {
             var instance = this;
 
             instance._enabled = false;
         },
 
+        /**
+         * Gets the node belonging to the Context.
+         *
+         * @method getNode
+         */
         getNode: function() {
             var instance = this;
 
@@ -361,6 +532,15 @@ A.extend(
     }
 );
 
+/**
+
+ * Adds a checkpoint to the current node.  The callback will be executed
+ * when the checkpoint is triggered.
+ *
+ * @method checkpoint
+ * @param  {Function} callback A function that will be invoked when the checkpint is triggered.
+ * @param  {Object} options An object containing options for the checkpoint and context.
+ */
 A.Node.prototype.checkpoint = function(callback, options) {
     options = options || {};
 
@@ -397,7 +577,12 @@ A.Node.prototype.checkpoint = function(callback, options) {
     this.nodeCheckpoint = new Checkpoint(this, callback, options);
 };
 
-// Duplicate the pattern from `Y.NodeList.prototype.plug`
+/**
+ * Adds a checkpoint to all Nodes in the list.  Duplicates the pattern
+ * from 'Y.NodeList.prototype.plug'
+ *
+ * @method checkpoint
+ */
 A.NodeList.prototype.checkpoint = function() {
     var args = arguments;
 
