@@ -23,7 +23,7 @@ var Checkpoint = function() {
 };
 
 /**
- * Static object containing deafult values for A.Node.Checkpoint.
+ * Static object containing default values for A.Node.Checkpoint.
  *
  * @property DEFAULTS
  * @type Object
@@ -95,7 +95,7 @@ Checkpoint.prototype.bindResizeUI = function() {
 };
 
 /**
- * Sets up scoll event handlers depending on axis and triggerAtTheEnd.
+ * Sets up scroll event handlers depending on axis and triggerAtTheEnd.
  *
  * @method bindScrollUI
  */
@@ -404,7 +404,7 @@ Context.getById = function(id) {
 };
 
 /**
- * Static object containing deafult values for Context.
+ * Static object containing default values for Context.
  *
  * @property DEFAULTS
  * @type Object
@@ -538,7 +538,7 @@ A.extend(
  * when the checkpoint is triggered.
  *
  * @method checkpoint
- * @param  {Function} callback A function that will be invoked when the checkpint is triggered.
+ * @param  {Function} callback A function that will be invoked when the checkpoint is triggered.
  * @param  {Object} options An object containing options for the checkpoint and context.
  */
 A.Node.prototype.checkpoint = function(callback, options) {

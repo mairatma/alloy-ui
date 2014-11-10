@@ -21,8 +21,8 @@ YUI.add('aui-node-checkpoints-tests', function(Y) {
         'Scroll delay accurately delays callback execution': function() {
             var checkpointNode = Y.one('#delayTrigger'),
                 context,
-                startTime,
-                endTime;
+                endTime,
+                startTime;
 
             checkpointNode.checkpoint(function() {
                 endTime = new Date().getTime();
@@ -90,7 +90,9 @@ YUI.add('aui-node-checkpoints-tests', function(Y) {
 
             Y.Assert.isTrue(this.checkpoint._enabled);
             Y.Assert.isTrue(context._enabled);
+
             Y.Assert.areEqual(this.checkpoint.getOffset(), offset);
+
             Y.Assert.isTrue(contextNode.compareTo(context.getNode()));
             Y.Assert.isTrue(checkpointNode.compareTo(this.checkpoint.getNode()));
         },
