@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../build/aui-css/css/bootstrap.css">
+    <script src="../../../build/aui/aui.js"></script>
+    <style>
+    p {
+        padding: 2em;
+    }
+
+    #demoA div {
+        background-color: #DCEAF4;
+    }
+
+    .spacer {
+        height: 20em;
+    }
+
+    #checkpointNotify {
+        background-color: #BB213E;
+    }
+
+    .infinite-list {
+        background: rgb(147, 177, 181);
+        height: 20em;
+        margin-top: 1.5em;
+        max-width: 37em;
+        overflow: auto;
+    }
+
+    .infinite-list li {
+        background: #444a50;
+        display: block;
+        float: left;
+        height: 10em;
+        margin: 1.5em 0 1.5em 1.5em;
+        width: 10em;
+    }
+    </style>
+</head>
+<body>
+	<h1>AlloyUI - Node Checkpoint</h1>
+	<div id="demoA" class="col-md-8">
+		<h3>Simple Checkpoints</h3>
+	    <div>
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+
+	        <hr />
+
+	        <p>Checkpoint!</p>
+
+	        <hr class="spacer" />
+	    </div>
+	</div>
+	<div id="demoB" class="col-md-4">
+		<h3>Infinite Scroll</h3>
+		<ul class="infinite-list">
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		    <li></li>
+		</ul>
+	</div>
+	<script>
+	YUI({filter: 'raw'}).use('aui-node-checkpoints', function(Y) {
+		//Simple Checkpoints
+	    var demoNodes = Y.all('#demoA p');
+
+	    var onCheckpoint = function(direction){
+	        var backgroundColor;
+
+	        if (direction === 'down') {
+	            backgroundColor = 'green';
+	        }
+	        else if (direction === 'up') {
+	            backgroundColor = 'white';
+	        }
+
+	        var node = this.getNode();
+
+	        node.setStyle('backgroundColor', backgroundColor);
+
+	        node.text('checkpoint reached scrolling ' + direction + '!');
+
+	        // this.destroy();
+	    };
+
+	    demoNodes.checkpoint(onCheckpoint, { offset: 100 });
+
+	    demoNodes.setStyle('backgroundColor', 'red');
+
+	    //Infinite Scroll
+	    var infiniteList = Y.one('#demoB .infinite-list');
+
+	    var randomColor = function() {
+	        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+	    };
+
+	    infiniteList.checkpoint(
+	        function(direction) {
+	            var newNodes = Y.all(
+	                Y.Node.create('<li></li>')
+	            );
+
+	            newNodes.push(Y.Node.create('<li></li>'));
+	            newNodes.push(Y.Node.create('<li></li>'));
+
+	            newNodes.setStyle('backgroundColor', randomColor());
+
+	            newNodes.appendTo(infiniteList);
+
+	            this.refresh(); // required when appending nodes to the container
+	        },
+	        {
+	            context: infiniteList,
+	            triggerAtTheEnd: true
+	        }
+	    );
+	});
+
+	</script>
+</body>
+</html>
