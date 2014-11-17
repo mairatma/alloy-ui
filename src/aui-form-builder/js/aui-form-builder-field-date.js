@@ -75,11 +75,11 @@ A.FormBuilderFieldDate = A.Base.create('form-builder-field-date', A.FormBuilderF
      * @protected
      */
     _afterBooleanFromToChange: function (booleanYearToggleFrom, booleanYearToggleTo, booleanTimeToggleFrom, booleanTimeToggleTo, event) {
-        booleanYearToggleTo.updateUiWithValue(booleanYearToggleFrom.get('editedValue'));
-        booleanTimeToggleTo.updateUiWithValue(booleanTimeToggleFrom.get('editedValue'));
-
         booleanYearToggleTo.set('visible', event.newVal);
         booleanTimeToggleTo.set('visible', event.newVal);
+
+        booleanYearToggleTo.updateUiWithValue(booleanYearToggleFrom.get('editedValue'));
+        booleanTimeToggleTo.updateUiWithValue(booleanTimeToggleFrom.get('editedValue'));
     },
 
     /**
@@ -150,28 +150,35 @@ A.FormBuilderFieldDate = A.Base.create('form-builder-field-date', A.FormBuilderF
 
         booleanYearToggleFrom = new A.BooleanDataEditor({
             checkedContent: TPL_CHECKED_CONTENT_DATE,
-            uncheckedContent: TPL_UNCHECKED_CONTENT_DATE
+            uncheckedContent: TPL_UNCHECKED_CONTENT_DATE,
+            innerLabelLeft: 'Year',
+            innerLabelRight: 'Year'
         });
 
         booleanTimeToggleFrom = new A.BooleanDataEditor({
             checkedContent: TPL_CHECKED_CONTENT_TIME,
-            uncheckedContent: TPL_UNCHECKED_CONTENT_TIME
+            uncheckedContent: TPL_UNCHECKED_CONTENT_TIME,
+            innerLabelRight: 'No'
         });
 
         booleanFromTo = new A.BooleanDataEditor({
-            label: 'Enable "From/To" Format'
+            label: 'Enable "From/To" Format',
+            innerLabelRight: 'No'
         });
 
         booleanYearToggleTo = new A.BooleanDataEditor({
             checkedContent: TPL_CHECKED_CONTENT_DATE,
             uncheckedContent: TPL_UNCHECKED_CONTENT_DATE,
-            visible: false
+            visible: false,
+            innerLabelLeft: 'Year',
+            innerLabelRight: 'Year'
         });
 
         booleanTimeToggleTo = new A.BooleanDataEditor({
             checkedContent: TPL_CHECKED_CONTENT_TIME,
             uncheckedContent: TPL_UNCHECKED_CONTENT_TIME,
-            visible: false
+            visible: false,
+            innerLabelRight: 'No'
         });
 
         booleanFromTo.after('editedValueChange', A.bind(
