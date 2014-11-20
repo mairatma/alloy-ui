@@ -27,42 +27,45 @@
     "aui-form-builder-field-choice": {
         "requires": [
             "aui-boolean-data-editor",
-            "aui-form-builder-field-sentence",
-            "aui-options-data-editor"
+            "aui-options-data-editor",
+            "aui-form-builder-field-base",
+            "aui-form-field-choice"
         ]
     },
 
     "aui-form-builder-field-date": {
         "requires": [
             "aui-boolean-data-editor",
-            "aui-form-builder-field-sentence"
+            "aui-form-builder-field-base",
+            "aui-form-field-date"
         ]
     },
 
     "aui-form-builder-field-list": {
         "requires": [
             "aui-boolean-data-editor",
-            "aui-form-builder-field-sentence",
-            "aui-options-data-editor"
+            "aui-options-data-editor",
+            "aui-form-builder-field-base",
+            "aui-form-field-list"
         ]
     },
 
     "aui-form-builder-field-grid": {
         "requires": [
             "aui-boolean-data-editor",
-            "aui-form-builder-field-sentence",
-            "aui-options-data-editor"
-        ],
-        "skinnable": true
+            "aui-options-data-editor",
+            "aui-form-builder-field-base",
+            "aui-form-field-grid"
+        ]
     },
 
     "aui-form-builder-field-scale": {
         "requires": [
             "aui-boolean-data-editor",
-            "aui-form-builder-field-sentence",
+            "aui-form-builder-field-base",
+            "aui-form-field-scale",
             "aui-scale-data-editor"
-        ],
-        "skinnable": true
+        ]
     },
 
     "aui-form-builder-field-sentence": {

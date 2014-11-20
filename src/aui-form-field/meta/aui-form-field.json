@@ -8,12 +8,44 @@
         "skinnable": true
     },
 
+    "aui-form-field-choice": {
+        "requires": [
+            "aui-form-field"
+        ],
+        "skinnable": true
+    },
+
+    "aui-form-field-date": {
+        "requires": [
+            "aui-form-field"
+        ],
+        "skinnable": true
+    },
+
+    "aui-form-field-grid": {
+        "requires": [
+            "aui-form-field"
+        ],
+        "skinnable": true
+    },
+
+    "aui-form-field-list": {
+        "requires": [
+            "aui-form-field"
+        ],
+        "skinnable": true
+    },
+
+    "aui-form-field-scale": {
+        "requires": [
+            "aui-form-field"
+        ],
+        "skinnable": true
+    },
+
     "aui-form-field-text": {
         "requires": [
-            "aui-classnamemanager",
-            "aui-form-field",
-            "aui-node-base",
-            "base-build"
+            "aui-form-field"
         ],
         "skinnable": true
     }
