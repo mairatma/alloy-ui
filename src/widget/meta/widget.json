@@ -1,0 +1,11 @@
+{
+    "widget": {
+        "requires": [
+            "attributes",
+            "widget-element"
+        ]
+    },
+
+    "widget-element": {
+    }
+}
