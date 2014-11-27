@@ -14,6 +14,7 @@
   "license": "BSD",
   "dependencies": {
     "polymer": "Polymer/polymer#~0.5.1",
-    "liferay-core": "eduardolundgren/liferay-core"
+    "liferay-core": "eduardolundgren/liferay-core",
+    "bootstrap": "~3.3.1"
   }
 }

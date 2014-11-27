@@ -1,0 +1,8 @@
+{
+    "alert": {
+        "widgetName": "AlloyAlert",
+        "requires": [
+            "widget"
+        ]
+    }
+}

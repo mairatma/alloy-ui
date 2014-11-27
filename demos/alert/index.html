@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>Alloy 4 - Alert</title>
+
+  <meta name="viewport"
+  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="import" href="../../build/components/alert/index.html">
+</head>
+
+<body unresolved>
+  <h1>AlloyUI - Alert</h1>
+
+  <aui-alert class="alert alert-info">
+    Thank You Mario! But Our Princess Is In Another Castle!
+    <button type="button" class="close">Close</button>
+  </aui-alert>
+
+  <aui-alert class="alert alert-danger">
+    I'm sorry, but the princess is in another castle!
+  </aui-alert>
+
+  <script>
+    var container = document.querySelector('body');
+
+    var alert = new AlloyAlert({
+      bodyContent: 'Do you think the princess is here?',
+      closeable: false
+    }).render(container);
+
+    alert.node.className = 'alert alert-warning';
+  </script>
+</body>
+
+</html>
