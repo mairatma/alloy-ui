@@ -217,6 +217,12 @@ A.mix(DatePickerBase.prototype, {
             instance.alignTo(node);
         }
 
+        if (node) {
+            node.detach('keydown', instance._handleKeydownEvent);
+
+            node.on('keydown', instance._handleKeydownEvent, instance);
+        }
+
         instance.clearSelection(true);
         instance.selectDatesFromInputValue(instance.getParsedDatesFromInputValue());
     },
@@ -271,6 +277,21 @@ A.mix(DatePickerBase.prototype, {
         var instance = this;
 
         instance._setCalendarToFirstSelectedDate();
+    },
+
+    /**
+    * Handles keydown events
+    *
+    * @method _handleKeydownEvent
+    * @param event
+    * @protected
+    */
+    _handleKeydownEvent: function(event) {
+        var instance = this;
+
+        if (event.isKey('enter')) {
+            instance.fire('enterKey');
+        }
     },
 
     /**
