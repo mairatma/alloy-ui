@@ -25,14 +25,16 @@
   </aui-alert>
 
   <script>
-    var container = document.querySelector('body');
+    window.addEventListener('polymer-ready', function() {
+        var container = document.querySelector('body');
 
-    var alert = new AlloyAlert({
-      bodyContent: 'Do you think the princess is here?',
-      closeable: false
-    }).render(container);
+        var alert = new AlloyAlert({
+          bodyContent: 'Do you think the princess is here?',
+          closeable: false
+        }).render(container);
 
-    alert.node.className = 'alert alert-warning';
+        alert.node.className = 'alert alert-warning';
+    });
   </script>
 </body>
 

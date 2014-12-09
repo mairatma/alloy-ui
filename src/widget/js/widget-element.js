@@ -1,19 +1,15 @@
 function AlloyElement(widgetFn) {
   prototype = {
     created: function() {
-      if (!this.widget) {
         this.widget = new widgetFn({}, this);
-      }
-
-      this.widget.created();
-    },
-
-    ready: function() {
-      this.widget.ready();
     },
 
     attached: function() {
-      this.widget.attached();
+        this.widget.attached();
+    },
+
+    attributeChanged: function(attrName, oldVal, newVal) {
+        this.widget.attributeChanged(attrName, oldVal, newVal);
     }
   };
 

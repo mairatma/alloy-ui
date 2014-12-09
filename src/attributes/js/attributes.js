@@ -1,12 +1,8 @@
 function AlloyAttributes(attrsConfig, context) {
-  AlloyWidget.base(this, 'constructor');
-
   this.attrConfigs_ = attrsConfig;
   this.context_ = context || this;
   this.addAttrs();
 }
-
-lfr.inherits(AlloyAttributes, lfr.EventEmitter);
 
 AlloyAttributes.prototype.addAttrs = function() {
   this.attrValues_ = {};
@@ -28,16 +24,7 @@ AlloyAttributes.prototype.addAttr = function(name) {
     },
 
     set: function(val) {
-      var oldVal = self.attrValues_[name];
       self.setAttr_(name, val);
-
-      if (self.attrValues_[name] !== oldVal) {
-        self.emit('attributeChange', {
-          attrName: name,
-          oldVal: oldVal,
-          newVal: self.attrValues_[name]
-        });
-      }
     }
   });
 
@@ -60,6 +47,8 @@ AlloyAttributes.prototype.getAttr_ = function(name) {
   return val;
 }
 
+// TODO: Rename to something that indicates if this was changed, instead of if it
+// currently has the default value
 AlloyAttributes.prototype.hasDefaultValue = function(name) {
   return this.defaultValues_[name];
 };

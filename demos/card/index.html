@@ -27,6 +27,8 @@
 </head>
 
 <body unresolved>
+  <h1>AlloyUI - Card</h1>
+
   <div class="container">
     <aui-card text="I am O(1)" person="{'name': 'Pablo Carvalho', 'picture': 'https://avatars0.githubusercontent.com/u/6331735?v=3&s=400'}"></aui-card>
     <aui-card></aui-card>
@@ -34,25 +36,25 @@
   </div>
 
   <script>
-    var container = document.querySelector('.container');
+    window.addEventListener('polymer-ready', function() {
+        var container = document.querySelector('.container');
 
-    new AlloyCard({
-      person: {
-        name: 'Java',
-        picture: 'http://i.istockimg.com/file_thumbview_approve/16356430/3/stock-illustration-16356430-boy-with-arms-falling-off.jpg'
-      },
-      text: 'I broke my arm'
-    }).render(container);
+        new AlloyCard({
+            person: {
+                name: 'Java',
+                picture: 'http://i.istockimg.com/file_thumbview_approve/16356430/3/stock-illustration-16356430-boy-with-arms-falling-off.jpg'
+            },
+            text: 'I broke my arm'
+        }).render(container);
 
-    setTimeout(function() {
-      new AlloyCard({
-        person: {
-          name: 'Eduardo Lundgren',
-          picture: 'http://www.dickersondistributors.com/wp-content/uploads/2010/07/dickerson-wine-guy1.png'
-        },
-        text: 'Squish squish'
-      }).render(container);
-    }, 500);
+        new AlloyCard({
+            person: {
+                name: 'Eduardo Lundgren',
+                picture: 'http://www.dickersondistributors.com/wp-content/uploads/2010/07/dickerson-wine-guy1.png'
+            },
+            text: 'Squish squish'
+        }).render(container);
+    });
   </script>
 </body>
 
