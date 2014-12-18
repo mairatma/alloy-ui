@@ -5,6 +5,41 @@ YUI.add('aui-tree-tests', function(Y) {
     suite.add(new Y.Test.Case({
         name: 'Tree View',
 
+        assertExpandCollapseAction: function(actionTriggerFn) {
+            var treeView,
+                originalListElements = Y.all('#createFromHTMLMarkupWithoutClassesTest li'),
+                originalListElementsCount = originalListElements.size(),
+                treeNodes,
+                treeNodesCount;
+
+            treeView = new Y.TreeView({
+                boundingBox: '#createFromHTMLMarkupWithoutClassesTest',
+                contentBox: '#createFromHTMLMarkupWithoutClassesTest > ul'
+            }).render();
+
+            treeNodes = Y.all('#createFromHTMLMarkupWithoutClassesTest .tree-node');
+            treeNodesCount = treeNodes.size();
+
+            Y.Assert.areSame(treeNodesCount, originalListElementsCount);
+
+            treeNodes.each(function(node) {
+                var expand = node.one('.tree-hitarea'),
+                    content = node.one('.tree-node-content');
+
+                if (expand) {
+                    actionTriggerFn(expand);
+
+                    Y.Assert.isTrue(content.hasClass('tree-expanded'));
+
+                    actionTriggerFn(expand);
+
+                    Y.Assert.isTrue(content.hasClass('tree-collapsed'));
+                }
+            });
+
+            treeView.destroy();
+        },
+
         'TreeView constructor should work without a config object': function() {
             var treeView = new Y.TreeView();
 
@@ -734,35 +769,24 @@ YUI.add('aui-tree-tests', function(Y) {
         },
 
         'TreeView generated from HTML markup without CSS classes should expand and collapse': function() {
-            var treeView,
-                originalListElements = Y.all('#createFromHTMLMarkupWithoutClassesTest li'),
-                originalListElementsCount = originalListElements.size(),
-                treeNodes,
-                treeNodesCount;
+            this.assertExpandCollapseAction(function (target) {
+                target.simulate('click');
+            });
+        },
 
-            treeView = new Y.TreeView({
-                boundingBox: '#createFromHTMLMarkupWithoutClassesTest',
-                contentBox: '#createFromHTMLMarkupWithoutClassesTest > ul'
-            }).render();
+        'TreeView generated from HTML markup without CSS classes should expand and collapse on enter key': function() {
+            this.assertExpandCollapseAction(function (target) {
+                target.simulate('keydown', {
+                    keyCode: 13
+                });
+            });
+        },
 
-            treeNodes = Y.all('#createFromHTMLMarkupWithoutClassesTest .tree-node');
-            treeNodesCount = treeNodes.size();
-
-            Y.Assert.areSame(treeNodesCount, originalListElementsCount);
-
-            treeNodes.each(function(node) {
-                var expand = node.one('.tree-hitarea'),
-                    content = node.one('.tree-node-content');
-
-                if (expand) {
-                    expand.simulate('click');
-
-                    Y.Assert.isTrue(content.hasClass('tree-expanded'));
-
-                    expand.simulate('click');
-
-                    Y.Assert.isTrue(content.hasClass('tree-collapsed'));
-                }
+        'TreeView generated from HTML markup without CSS classes should expand and collapse on space key': function() {
+            this.assertExpandCollapseAction(function (target) {
+                target.simulate('keydown', {
+                    keyCode: 32
+                });
             });
         }
     }));
