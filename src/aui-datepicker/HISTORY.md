@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-1841](htpps://issues.liferay.com/browse/AUI-1841) Datepicker does not interact with tab key.
 * [AUI-1795](https://issues.liferay.com/browse/AUI-1795) DatePicker throws "Uncaught TypeError" when getPopover() is called and anything other than trigger is clicked
 * [AUI-1205](https://issues.liferay.com/browse/AUI-1205) datePicker fires selectionChange event when trigger is clicked
 
