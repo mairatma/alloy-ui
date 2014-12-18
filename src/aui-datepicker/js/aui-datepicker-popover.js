@@ -179,16 +179,12 @@ A.mix(DatePickerPopover.prototype, {
                     node: _DOCUMENT,
                     eventName: 'key',
                     keyCode: 'esc'
-                },
-                {
-                    node: _DOCUMENT,
-                    eventName: 'key',
-                    keyCode: 'tab'
                 }
             ],
             position: 'bottom',
             render: true,
-            triggerShowEvent: 'focus',
+            triggerHideEvent: 'blur',
+            triggerShowEvent: 'click',
             triggerToggleEvent: null,
             visible: false
         }, val);
