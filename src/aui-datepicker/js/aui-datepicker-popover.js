@@ -172,8 +172,8 @@ A.mix(DatePickerPopover.prototype, {
 
         return A.merge({
             bodyContent: '',
-            cssClass: instance.get('popoverCssClass'),
             constrain: true,
+            cssClass: instance.get('popoverCssClass'),
             hideOn: [
                 {
                     node: _DOCUMENT,
@@ -183,6 +183,7 @@ A.mix(DatePickerPopover.prototype, {
             ],
             position: 'bottom',
             render: true,
+            triggerHideEvent: 'blur',
             triggerShowEvent: 'click',
             triggerToggleEvent: null,
             visible: false
