@@ -57,6 +57,41 @@ A.FormBuilderLayoutBuilder.prototype = {
     },
 
     /**
+     * Fired when the `addColMoveButton` event from the layout builder is triggered.
+     *
+     * @method _addColMoveButton
+     * @param {Node} colNode
+     * @param {Node} rowNode
+     * @protected
+     */
+    _addColMoveButton: function(colNode, rowNode) {
+        var targetNodes;
+
+        colNode.addClass(CSS_CHOOSE_COL_MOVE);
+
+        targetNodes = colNode.all('.' + CSS_FIELD_MOVE_BUTTON);
+        targetNodes.setData('node-col', colNode);
+        targetNodes.setData('node-row', rowNode);
+    },
+
+    /**
+     * Fired when the `addColMoveTarget` event from the layout builder is triggered.
+     *
+     * @method _addColMoveTarget
+     * @param {A.LayoutCol} col
+     * @protected
+     */
+    _addColMoveTarget: function(col) {
+        var colNode = col.get('node'),
+            targetNodes;
+
+        colNode.addClass(CSS_CHOOSE_COL_MOVE_TARGET);
+
+        targetNodes = colNode.all('.' + CSS_FIELD_MOVE_TARGET);
+        targetNodes.setData('col', col);
+    },
+
+    /**
      * Fired after the `layout` attribute is set.
      *
      * @method _afterLayoutBuilderLayoutChange
@@ -89,31 +124,81 @@ A.FormBuilderLayoutBuilder.prototype = {
      */
     _afterLayoutBuilderRender: function() {
         this._layoutBuilder = new A.LayoutBuilder({
+            addColMoveButton: A.bind(this._addColMoveButton, this),
+            addColMoveTarget: A.bind(this._addColMoveTarget, this),
+            chooseColMoveTarget: A.bind(this._chooseColMoveTarget),
+            clickColMoveTarget: A.bind(this._clickColMoveTarget, this),
             container: this.get('contentBox').one('.' + CSS_LAYOUT),
-            layout: this.get('layout')
+            layout: this.get('layout'),
+            removeColMoveButtons: A.bind(this._removeColMoveButtons, this),
+            removeColMoveTargets: A.bind(this._removeColMoveTargets, this)
         });
-        this._bindLayoutBuilderEvents();
 
         this._uiSetLayoutBuilderMode(this.get('mode'));
     },
 
     /**
-     * Binds all events related to the layout builder.
+     * Fired when the `clickColMoveTarget` event from the layout builder is triggered.
      *
-     * @method _bindLayoutBuilderEvents
+     * @method _clickColMoveTarget
+     * @param {Node} moveTarget
      * @protected
      */
-    _bindLayoutBuilderEvents: function() {
-        this._eventHandles.push(
-            this._layoutBuilder.on({
-                addColMoveButton: A.bind(this._onAddColMoveButton, this),
-                addColMoveTarget: A.bind(this._onAddColMoveTarget, this),
-                chooseColMoveTarget: A.bind(this._onChooseColMoveTarget, this),
-                clickColMoveTarget: A.bind(this._onClickColMoveTarget, this),
-                removeColMoveButtons: A.bind(this._onRemoveColMoveButtons, this),
-                removeColMoveTargets: A.bind(this._onRemoveColMoveTargets, this)
-            })
-        );
+    _clickColMoveTarget: function(moveTarget) {
+        var parentFieldNode = this._fieldBeingMoved.get('content').ancestor('.' + CSS_FIELD),
+            targetNestedParent = moveTarget.getData('nested-field-parent');
+
+        if (parentFieldNode) {
+            parentFieldNode.getData('field-instance').removeNestedField(this._fieldBeingMoved);
+
+            this.get('layout').normalizeColsHeight([this.getFieldRow(parentFieldNode.getData('field-instance'))]);
+        }
+        else {
+            this._fieldBeingMovedCol.set('value', null);
+        }
+
+        if (targetNestedParent) {
+            this._addNestedField(
+                targetNestedParent,
+                this._fieldBeingMoved,
+                moveTarget.getData('nested-field-index')
+            );
+        }
+        else {
+            moveTarget.getData('col').set('value', this._fieldBeingMoved);
+        }
+
+        this._layoutBuilder.cancelMove();
+    },
+
+    /**
+     * Fired when the `chooseColMoveTarget` event from the layout builder is triggered.
+     *
+     * @method _chooseColMoveTarget
+     * @param {Node} cutButton
+     * @param {A.LayoutCol} col
+     * @protected
+     */
+    _chooseColMoveTarget: function(cutButton, col) {
+        var colNode = col.get('node'),
+            fieldNode = cutButton.ancestor('.' + CSS_FIELD),
+            targetNode;
+
+        this._fieldBeingMoved = fieldNode.getData('field-instance');
+        this._fieldBeingMovedCol = col;
+
+        colNode.addClass(CSS_CHOOSE_COL_MOVE_TARGET);
+        fieldNode.addClass(CSS_FIELD_MOVING);
+
+        targetNode = fieldNode.previous('.' + CSS_FIELD_MOVE_TARGET);
+        if (targetNode) {
+            targetNode.addClass(CSS_FIELD_MOVE_TARGET_INVALID);
+        }
+
+        targetNode = fieldNode.next('.' + CSS_FIELD_MOVE_TARGET);
+        if (targetNode) {
+            targetNode.addClass(CSS_FIELD_MOVE_TARGET_INVALID);
+        }
     },
 
     /**
@@ -153,134 +238,25 @@ A.FormBuilderLayoutBuilder.prototype = {
     },
 
     /**
-     * Fired when the `addColMoveButton` event from the layout builder is triggered.
+     * Fired when the `removeColMoveTargets` event from the layout builder is triggered.
      *
-     * @method _onAddColMoveButton
-     * @param  {EventFacade} event
+     * @method _removeColMoveTargets
      * @protected
      */
-    _onAddColMoveButton: function(event) {
-        var targetNodes;
-
-        event.colNode.addClass(CSS_CHOOSE_COL_MOVE);
-
-        targetNodes = event.colNode.all('.' + CSS_FIELD_MOVE_BUTTON);
-        targetNodes.setData('node-col', event.colNode);
-        targetNodes.setData('node-row', event.rowNode);
-
-        event.preventDefault();
-    },
-
-    /**
-     * Fired when the `addColMoveTarget` event from the layout builder is triggered.
-     *
-     * @method _onAddColMoveTarget
-     * @param  {EventFacade]} event
-     * @protected
-     */
-    _onAddColMoveTarget: function(event) {
-        var colNode = event.col.get('node'),
-            targetNodes;
-
-        colNode.addClass(CSS_CHOOSE_COL_MOVE_TARGET);
-
-        targetNodes = colNode.all('.' + CSS_FIELD_MOVE_TARGET);
-        targetNodes.setData('col', event.col);
-
-        event.preventDefault();
-    },
-
-    /**
-     * Fired when the `chooseColMoveTarget` event from the layout builder is triggered.
-     *
-     * @method _onChooseColMoveTarget
-     * @param  {EventFacade} event
-     * @protected
-     */
-    _onChooseColMoveTarget: function(event) {
-        var colNode = event.col.get('node'),
-            fieldNode = event.clickedButton.ancestor('.' + CSS_FIELD),
-            targetNode;
-
-        this._fieldBeingMoved = fieldNode.getData('field-instance');
-        this._fieldBeingMovedCol = event.col;
-
-        colNode.addClass(CSS_CHOOSE_COL_MOVE_TARGET);
-        fieldNode.addClass(CSS_FIELD_MOVING);
-
-        targetNode = fieldNode.previous('.' + CSS_FIELD_MOVE_TARGET);
-        if (targetNode) {
-            targetNode.addClass(CSS_FIELD_MOVE_TARGET_INVALID);
-        }
-
-        targetNode = fieldNode.next('.' + CSS_FIELD_MOVE_TARGET);
-        if (targetNode) {
-            targetNode.addClass(CSS_FIELD_MOVE_TARGET_INVALID);
-        }
-    },
-
-    /**
-     * Fired when the `clickColMoveTarget` event from the layout builder is triggered.
-     *
-     * @method _onClickColMoveTarget
-     * @param  {EventFacade} event
-     * @protected
-     */
-    _onClickColMoveTarget: function(event) {
-        var moveTarget = event.moveTarget,
-            parentFieldNode = this._fieldBeingMoved.get('content').ancestor('.' + CSS_FIELD),
-            targetNestedParent = moveTarget.getData('nested-field-parent');
-
-        if (parentFieldNode) {
-            parentFieldNode.getData('field-instance').removeNestedField(this._fieldBeingMoved);
-
-            this.get('layout').normalizeColsHeight([this.getFieldRow(parentFieldNode.getData('field-instance'))]);
-        }
-        else {
-            this._fieldBeingMovedCol.set('value', null);
-        }
-
-        if (targetNestedParent) {
-            this._addNestedField(
-                targetNestedParent,
-                this._fieldBeingMoved,
-                moveTarget.getData('nested-field-index')
-            );
-        }
-        else {
-            moveTarget.getData('col').set('value', this._fieldBeingMoved);
-        }
-
-        this._layoutBuilder.cancelMove();
-        event.preventDefault();
+    _removeColMoveTargets: function() {
+        this.get('contentBox').all('.' + CSS_CHOOSE_COL_MOVE_TARGET).removeClass(CSS_CHOOSE_COL_MOVE_TARGET);
+        this.get('contentBox').all('.' + CSS_FIELD_MOVING).removeClass(CSS_FIELD_MOVING);
+        this.get('contentBox').all('.' + CSS_FIELD_MOVE_TARGET_INVALID).removeClass(CSS_FIELD_MOVE_TARGET_INVALID);
     },
 
     /**
      * Fired when the `removeColMoveButtons` event from the layout builder is triggered.
      *
-     * @method _onRemoveColMoveButtons
-     * @param  {EventFacade} event
+     * @method _removeColMoveButtons
      * @protected
      */
-    _onRemoveColMoveButtons: function(event) {
+    _removeColMoveButtons: function() {
         this.get('contentBox').all('.' + CSS_CHOOSE_COL_MOVE).removeClass(CSS_CHOOSE_COL_MOVE);
-
-        event.preventDefault();
-    },
-
-    /**
-     * Fired when the `removeColMoveTargets` event from the layout builder is triggered.
-     *
-     * @method _onRemoveColMoveTargets
-     * @param  {EventFacade} event
-     * @protected
-     */
-    _onRemoveColMoveTargets: function(event) {
-        this.get('contentBox').all('.' + CSS_CHOOSE_COL_MOVE_TARGET).removeClass(CSS_CHOOSE_COL_MOVE_TARGET);
-        this.get('contentBox').all('.' + CSS_FIELD_MOVING).removeClass(CSS_FIELD_MOVING);
-        this.get('contentBox').all('.' + CSS_FIELD_MOVE_TARGET_INVALID).removeClass(CSS_FIELD_MOVE_TARGET_INVALID);
-
-        event.preventDefault();
     },
 
     /**
