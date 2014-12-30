@@ -169,6 +169,7 @@ A.mix(DatePickerPopover.prototype, {
      */
     _setPopover: function(val) {
         var instance = this;
+        var activeInput = instance.get('activeInput');
 
         return A.merge({
             bodyContent: '',
@@ -179,6 +180,11 @@ A.mix(DatePickerPopover.prototype, {
                     node: _DOCUMENT,
                     eventName: 'key',
                     keyCode: 'esc'
+                },
+                {
+                    node: activeInput,
+                    eventName: 'key',
+                    keyCode: 'tab'
                 }
             ],
             position: 'bottom',

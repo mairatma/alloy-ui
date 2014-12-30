@@ -207,11 +207,11 @@ A.mix(DatePickerBase.prototype, {
      * @param node
      */
     useInputNode: function(node) {
-        var instance = this,
-            popover = instance.getPopover();
-
-        popover.set('trigger', node);
+        var instance = this;
         instance.set('activeInput', node);
+
+        var popover = instance.getPopover();
+        popover.set('trigger', node);
 
         if (!popover.get('visible')) {
             instance.alignTo(node);
