@@ -282,10 +282,10 @@ LayoutBuilderMove.prototype = {
 
         this._removeAllCutButton(cutButton);
 
-        if (this._layoutContainer.one('.' + CSS_MOVE_ROW_TARGET + ', .' + CSS_MOVE_COL_TARGET)) {
-            this.cancelMove();
-            return;
-        }
+        // if (this._layoutContainer.one('.' + CSS_MOVE_ROW_TARGET + ', .' + CSS_MOVE_COL_TARGET)) {
+        //     this.cancelMove();
+        //     return;
+        // }
 
         if (cutButton.hasClass(CSS_MOVE_CUT_ROW_BUTTON)) {
             this._createRowTargetArea();

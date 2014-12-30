@@ -126,13 +126,15 @@ A.FormBuilderLayoutBuilder.prototype = {
         this._layoutBuilder = new A.LayoutBuilder({
             addColMoveButton: A.bind(this._addColMoveButton, this),
             addColMoveTarget: A.bind(this._addColMoveTarget, this),
-            chooseColMoveTarget: A.bind(this._chooseColMoveTarget),
             clickColMoveTarget: A.bind(this._clickColMoveTarget, this),
             container: this.get('contentBox').one('.' + CSS_LAYOUT),
             layout: this.get('layout'),
             removeColMoveButtons: A.bind(this._removeColMoveButtons, this),
             removeColMoveTargets: A.bind(this._removeColMoveTargets, this)
         });
+
+        var originalFn = this._layoutBuilder.get('chooseColMoveTarget');
+        this._layoutBuilder.set('chooseColMoveTarget', A.bind(this._chooseColMoveTarget, this, originalFn));
 
         this._uiSetLayoutBuilderMode(this.get('mode'));
     },
@@ -179,7 +181,7 @@ A.FormBuilderLayoutBuilder.prototype = {
      * @param {A.LayoutCol} col
      * @protected
      */
-    _chooseColMoveTarget: function(cutButton, col) {
+    _chooseColMoveTarget: function(originalChooseColMoveTarget, cutButton, col) {
         var colNode = col.get('node'),
             fieldNode = cutButton.ancestor('.' + CSS_FIELD),
             targetNode;
@@ -199,6 +201,8 @@ A.FormBuilderLayoutBuilder.prototype = {
         if (targetNode) {
             targetNode.addClass(CSS_FIELD_MOVE_TARGET_INVALID);
         }
+
+        originalChooseColMoveTarget(cutButton, col);
     },
 
     /**
