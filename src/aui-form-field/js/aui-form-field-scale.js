@@ -70,7 +70,7 @@ A.FormFieldScale = A.Base.create('form-field-scale', A.FormField, [], {
      * Updates the ui according to the value of the `range` attribute.
      *
      * @method _uiSetRange
-     * @param {String} range
+     * @param {Array} range
      * @protected
      */
     _uiSetRange: function(range) {
@@ -91,6 +91,18 @@ A.FormFieldScale = A.Base.create('form-field-scale', A.FormField, [], {
      * @static
      */
     ATTRS: {
+        /**
+         * Id to reference form data after a form is submitted.
+         *
+         * @attribute name
+         * @default ''
+         * @type String
+         */
+        name: {
+            validator: A.Lang.isString,
+            value: ''
+        },
+
         /**
          * Array with the lower and the higher value to the scale.
          *

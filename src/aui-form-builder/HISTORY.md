@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-1802](https://issues.liferay.com/browse/AUI-1802) Add name as an advanced field setting
 * [AUI-1803](https://issues.liferay.com/browse/AUI-1803) Should be able to add and resize columns on main mode
 * [AUI-1785](https://issues.liferay.com/browse/AUI-1785) Merge list and choice fields into a single field type
 * [AUI-1800](https://issues.liferay.com/browse/AUI-1800) Add option on field toolbar to add a nested field
