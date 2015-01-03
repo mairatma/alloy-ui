@@ -36,12 +36,14 @@ gulp help
 
 ### Setup
 
+0. Install npm >= [v2.1.12]
+
 1. Install NodeJS >= [v0.11.13](http://nodejs.org/dist/v0.11.13/), if you don't have it yet.
 
 2. Install global dependencies:
 
     ```
-[sudo] npm install -g gulp
+[sudo] npm install -g gulp >= [v3.8.10]
     ```
 
 3. Install local dependencies:
