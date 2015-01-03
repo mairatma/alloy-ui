@@ -58,6 +58,60 @@ npm install
 gulp build
     ```
 
+## Testing
+
+Install [Yeti](https://github.com/yui/yeti):
+
+```
+[sudo] npm install -g yeti >= [v0.2.27]
+```
+
+To execute all the tests in the project, please follow these instructions:
+
+1. Open a terminal and start a Yeti server:
+
+```bash
+yeti --server
+```
+
+You'll see something similar to this log:
+
+```bash
+Yeti Hub started. LAN: http://localhost:9000
+                  Local: http://localhost:9000
+```
+
+2. Open a terminal and connect to the Yeti instance:
+
+```bash
+cd src
+yeti --junit **/tests/unit/*.html > alloy-tests.xml
+```
+
+The `--junit` parameter will generate an output file in [jUnit](http://junit.org) format, which is readable by CI servers as [Jenkins](http://www.jenkins-ci.org), [Hudson](http://hudson-ci.org/), or [Go](http://www.go.cd).
+
+You'll see something similar to this log:
+
+```bash
+Waiting for agents to connect at http://localhost:9000
+...also available locally at http://localhost:9000
+```
+
+3. Point as many browsers as you want to the Yeti server, which should run on localhost:9000. You'll see something similar to this log:
+
+```bash
+When ready, press Enter to begin testing.
+  Agent connected: Chrome (39.0.2171.95) / Mac OS from 127.0.0.1
+  Agent connected: Firefox (30.0) / Mac OS from 127.0.0.1
+```
+
+4. Press Enter:
+
+```bash
+✓ Testing started on Chrome (39.0.2171.95) / Mac OS, Firefox (30.0) / Mac OS
+► Testing... - 43% complete (68/160) 50.47 beats/sec ETA 35 seconds
+```
+
 ## Discussion
 
 * [Liferay Forums](http://www.liferay.com/community/forums/-/message_boards/category/8409523)
