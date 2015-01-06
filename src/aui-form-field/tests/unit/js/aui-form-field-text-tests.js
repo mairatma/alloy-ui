@@ -20,7 +20,7 @@ YUI.add('aui-form-field-text-tests', function(Y) {
             Y.Assert.isNotNull(fieldNode.one('input[type="text"]'));
             Y.Assert.isNull(fieldNode.one('textarea'));
 
-            this._field.set('multiline', true);
+            this._field.set('multiline', 1);
             Y.Assert.isNull(fieldNode.one('input[type="text"]'));
             Y.Assert.isNotNull(fieldNode.one('textarea'));
         }

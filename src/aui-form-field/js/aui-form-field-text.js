@@ -71,11 +71,13 @@ A.FormFieldText = A.Base.create('form-field-text', A.FormField, [], {
 
         inputNode.empty();
 
-        if (multiline) {
-            inputNode.append(TPL_MULTILINE);
-        }
-        else {
-            inputNode.append(TPL_SINGLE_LINE);
+        switch (multiline) {
+            case 0:
+                inputNode.append(TPL_SINGLE_LINE);
+                break;
+            case 1:
+                inputNode.append(TPL_MULTILINE);
+                break;
         }
     }
 }, {
@@ -92,12 +94,12 @@ A.FormFieldText = A.Base.create('form-field-text', A.FormField, [], {
          * Flag indicating if the text input will allow multiple lines.
          *
          * @attribute multiline
-         * @default false
-         * @type {Boolean}
+         * @default 0
+         * @type {Number}
          */
         multiline: {
-            validator: A.Lang.isBoolean,
-            value: false
+            validator: A.Lang.isNumber,
+            value: 0
         },
 
         /**
