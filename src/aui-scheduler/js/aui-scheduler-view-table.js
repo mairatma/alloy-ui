@@ -1231,7 +1231,7 @@ var SchedulerTableView = A.Component.create({
                 new Date(Math.max(startDate, intervalStartDate)),
                 firstDayOfWeek
             ));
-            var paddingNodeIndex = Math.floor(DateMath.getDayOffset(celDate, startDateFirstDayOfWeek) / WEEK_LENGTH);
+            var paddingNodeIndex = Math.floor(DateMath.getDayOffset(celDate, startDateFirstDayOfWeek) / (WEEK_LENGTH - 1));
 
             if (evtNodeList.size() <= paddingNodeIndex) {
                 evt.addPaddingNode();
