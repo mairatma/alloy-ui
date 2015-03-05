@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-1856](https://issues.liferay.com/browse/AUI-1856) Incorrect display of overnight events in monthly view
 * [AUI-1857](https://issues.liferay.com/browse/AUI-1857) "Show x more" in scheduler monthly view shows events in wrong time format
 * [AUI-1854](https://issues.liferay.com/browse/AUI-1854) Calendar, Week View, Events at the and of every day are not displayed properly
 * [AUI-1835](https://issues.liferay.com/browse/AUI-1835) Scheduler views select dropdown is not set to active view on render
