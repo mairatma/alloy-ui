@@ -35,6 +35,11 @@
             "jsfiles": [
                 "js/aui-text-data-editor.js"
             ]
+        },
+        "aui-image-url-data-editor": {
+            "jsfiles": [
+                "js/aui-image-url-data-editor.js"
+            ]
         }
     }
 }

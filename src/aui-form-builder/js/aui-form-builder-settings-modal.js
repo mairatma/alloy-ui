@@ -85,6 +85,8 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
         if (this._eventToggleAdvancedContent) {
             this._eventToggleAdvancedContent.detach();
         }
+
+        this._fieldBeingEdited.detach('click', A.bind(this._disapleSaveButton, this));
     },
 
     /**
@@ -118,8 +120,27 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
         }
 
         this._eventToggleAdvancedContent = field.on('contentToggle', A.bind(this._updateSmallScreenButtons, this));
-
+        this._imageLoadEvent = field.on('status', A.bind(this._disapleSaveButton, this));
         this._fieldBeingEdited = field;
+    },
+
+    /**
+     * Hides the settings modal for the given field.
+     *
+     * @method hide
+     * @param {EventFacade} event
+     * @protected
+     */
+    _disapleSaveButton: function(event) {
+        var saveButton = this._modal.get('boundingBox').one('.' + CSS_FIELD_SETTINGS_SAVE);
+
+        if (!event.ready) {
+            if (!saveButton.hasClass('disabled')) {
+                saveButton.addClass('disabled');
+            }
+        } else {
+            saveButton.removeClass('disabled');
+        }
     },
 
     /**

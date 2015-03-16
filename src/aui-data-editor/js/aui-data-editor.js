@@ -67,7 +67,7 @@ A.DataEditor = A.Base.create('data-editor', A.Base, [], {
      * @method isEmpty
      */
     isEmpty: function() {
-        return false;
+        return !A.Lang.trim(this.get('editedValue'));
     },
 
     /**
@@ -77,11 +77,28 @@ A.DataEditor = A.Base.create('data-editor', A.Base, [], {
      * @return {Boolean}
      */
     isValid: function() {
+        var result = false;
+
         if(!this.get('required')) {
-            return true;
+            result = true;
+        } else {
+            result = !this.isEmpty();
         }
-        return !this.isEmpty();
+        
+        if (!result) {
+            this.get('node').addClass('has-error');
+        }
+
+        return result;
     },
+
+    /**
+     * Prepare data editor content before be edited.
+     * This should be overridden by subclasses.
+     *
+     * @method prepareContent
+     */
+    prepareContent: function() {},
 
     /**
      * Fired after the `label` attribute is set.

@@ -18,6 +18,7 @@ YUI({ filter:'raw' }).use(
     'aui-form-builder-field-choice',
     'aui-form-builder-field-date',
     'aui-form-builder-field-grid',
+    'aui-form-builder-field-media',
     'aui-form-builder-field-text',
     'aui-form-builder-field-time',
     'aui-form-builder-field-scale',
@@ -136,6 +137,10 @@ YUI({ filter:'raw' }).use(
                 fieldClass: Y.FormBuilderFieldGrid,
                 icon:'glyphicon glyphicon-font',
                 label: 'Grid'
+            },{
+                fieldClass: Y.FormBuilderFieldMedia,
+                icon:'glyphicon glyphicon-picture',
+                label: 'Media'
             }],
             layout: layout
         }).render('#formBuilder');

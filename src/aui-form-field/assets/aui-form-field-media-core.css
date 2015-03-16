@@ -1,0 +1,22 @@
+.form-field-media-image {
+    width: 100%;
+}
+
+.form-field-media-image-content {
+    position: relative;
+}
+
+.form-field-media-info {
+    left: 5px;
+    position: absolute;
+    top: 1px;
+    width: 99%;
+    word-wrap: break-word;
+}
+
+.form-field-media-preview-button {
+    background-color: #d3d3d3;
+    position: relative;
+    top: -25px;
+    width: 100%;
+}

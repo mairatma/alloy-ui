@@ -27,7 +27,7 @@ YUI.add('aui-data-editor-tests', function(Y) {
             Y.Assert.isTrue(editor.isValid());
 
             editor.set('required', true);
-            Y.Assert.isTrue(editor.isValid());
+            Y.Assert.isFalse(editor.isValid());
         },
 
         'should remove node after editor is destroyed': function() {
@@ -80,6 +80,16 @@ YUI.add('aui-data-editor-tests', function(Y) {
 
             editor.set('visible', true);
             Y.Assert.areNotEqual('none', editor.get('node').getStyle('display'));
+        },
+
+        'should should prepare data editor content before print': function() {
+            var editor,
+                TestEditor = this._createTestEditorClass();
+
+            editor = new TestEditor();
+
+            editor.prepareContent();
+            Y.Assert.areEqual('function', typeof editor.prepareContent);
         }
     }));
 

@@ -29,6 +29,14 @@
         "skinnable": true
     },
 
+    "aui-form-field-media": {
+        "requires": [
+            "aui-form-field-required",
+            "aui-tabview"
+        ],
+        "skinnable": true
+    },
+
     "aui-form-field-required": {
         "requires": [
             "aui-form-field"

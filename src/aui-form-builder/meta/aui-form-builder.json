@@ -55,6 +55,14 @@
         ]
     },
 
+    "aui-form-builder-field-media": {
+        "requires": [
+            "aui-image-url-data-editor",
+            "aui-form-builder-field-base",
+            "aui-form-field-media"
+        ]
+    },
+
     "aui-form-builder-field-scale": {
         "requires": [
             "aui-boolean-data-editor",
