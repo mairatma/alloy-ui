@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-1695](https://issues.liferay.com/browse/AUI-1695) Create media field for adding image urls
 * [AUI-1787](https://issues.liferay.com/browse/AUI-1787) Implement new scale field's behavior
 * [AUI-1816](https://issues.liferay.com/browse/AUI-1816) Add placeholder as an advanced field setting
 * [AUI-1813](https://issues.liferay.com/browse/AUI-1813) Show asterisk beside required fields title

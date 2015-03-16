@@ -23,9 +23,13 @@
 <div id="armorPanel">Out of armor</div>
 <div id="accessoriesPanel">Out of accessories</div>
 
+<h2>Image URL Editor</h2>
+<div id="imageURLEditor"></div>
+
 <script type="text/javascript" charset="utf-8">
 YUI({ filter:'raw' }).use(
     'aui-data-editor',
+    'aui-image-url-data-editor',
     'aui-options-data-editor',
     'aui-radio-group-data-editor',
     'aui-tabs-data-editor',
@@ -68,6 +72,11 @@ YUI({ filter:'raw' }).use(
             ]
         });
         Y.one('#tabsEditor').append(tabsEditor.get('node'));
+
+        var imageURLEditor = new Y.ImageURLDataEditor({
+            editedValue: 'assets/lfr-soccer-7.jpg'
+        });
+        Y.one('#imageURLEditor').append(imageURLEditor.get('node'));
     }
 );
 </script>
