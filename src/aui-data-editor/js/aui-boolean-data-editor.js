@@ -45,6 +45,16 @@ A.BooleanDataEditor = A.Base.create('boolean-data-editor', A.DataEditor, [], {
     },
 
     /**
+     * Returns `false` to any case.
+     *
+     * @method isEmpty
+     * @return {Boolean}
+     */
+    isEmpty: function() {
+        return false;
+    },
+
+    /**
      * Fired after the checkbox is clicked.
      *
      * @method _afterButtonSwitchActivatedChange
