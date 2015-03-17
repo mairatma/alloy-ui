@@ -13,6 +13,13 @@
         ],
         "skinnable": true
     },
+    "aui-image-url-data-editor": {
+        "requires": [
+            "aui-data-editor",
+            "event-valuechange"
+        ],
+        "skinnable": true
+    },
     "aui-options-data-editor": {
         "requires": [
             "aui-data-editor",

@@ -24,6 +24,9 @@
     <h2>Grid</h2>
     <div id="fieldGrid"></div>
 
+    <h3>Media</h3>
+    <div id="fieldMedia"></div>
+
     <h2>Scale</h2>
     <div id="fieldScale"></div>
 
@@ -35,7 +38,7 @@
 
 <script type="text/javascript" charset="utf-8">
 YUI({ filter:'raw' }).use('aui-form-field-choice', 'aui-form-field-date', 'aui-form-field-grid',
-    'aui-form-field-scale', 'aui-form-field-time', 'aui-form-field-text',
+    'aui-form-field-media', 'aui-form-field-scale', 'aui-form-field-time', 'aui-form-field-text',
     function(Y) {
     var fieldChoiceRadio = new Y.FormFieldChoice({
         help: 'Remember all I\'m offering is the truth',
@@ -76,6 +79,13 @@ YUI({ filter:'raw' }).use('aui-form-field-choice', 'aui-form-field-date', 'aui-f
         rows: ['A', 'B', 'C', ,'D', 'E', 'F', 'G', 'H', 'I', 'J']
     });
     Y.one('#fieldGrid').append(fieldGrid.get('content'));
+
+    var fieldMedia = new Y.FormFieldMedia({
+        help: 'Bears',
+        title: 'Animal',
+        imageSource: 'assets/lfr-soccer-7.jpg'
+    });
+    Y.one('#fieldMedia').append(fieldMedia.get('content'));
 
     var fieldScale = new Y.FormFieldScale({
         help: 'Slide the circle between the given range',

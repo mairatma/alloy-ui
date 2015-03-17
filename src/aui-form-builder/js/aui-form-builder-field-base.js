@@ -169,6 +169,8 @@ A.FormBuilderFieldBase.prototype = {
         setting.editor.get('node').removeClass('has-error');
         setting.editor.set('originalValue', attrValue);
         setting.editor.set('editedValue', attrValue);
+        setting.editor.prepareContent();
+
         targetNode.append(setting.editor.get('node'));
     },
 
@@ -281,6 +283,7 @@ A.FormBuilderFieldBase.prototype = {
      */
     _createMoveTarget: function(position) {
         var targetNode = A.Node.create(this.TPL_FIELD_MOVE_TARGET);
+
         targetNode.setData('nested-field-index', position);
         targetNode.setData('nested-field-parent', this);
 

@@ -1,0 +1,22 @@
+.image-url-data-editor-button {
+    background-color: #d3d3d3;
+    height: 30px;
+    position: relative;
+    top: -25px;
+    width: 100%;
+}
+
+.image-url-data-editor-preview:before {
+    content: 'Preview';
+}
+
+.image-url-data-editor-image {
+    width: 100%;
+}
+
+.image-url-data-editor-loading-icon {
+    background-image: url(loading-icon.gif);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 20px;
+}

@@ -80,8 +80,17 @@ A.DataEditor = A.Base.create('data-editor', A.Base, [], {
         if(!this.get('required')) {
             return true;
         }
+
         return !this.isEmpty();
     },
+
+    /**
+     * Prepare data editor content before be edited.
+     * This should be overridden by subclasses.
+     *
+     * @method prepareContent
+     */
+    prepareContent: function() {},
 
     /**
      * Fired after the `label` attribute is set.

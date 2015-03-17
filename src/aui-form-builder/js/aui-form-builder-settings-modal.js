@@ -85,6 +85,8 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
         if (this._eventToggleAdvancedContent) {
             this._eventToggleAdvancedContent.detach();
         }
+
+        this._fieldBeingEdited.detach('click', A.bind(this._disableSaveButton, this));
     },
 
     /**
@@ -118,8 +120,25 @@ A.FormBuilderSettingsModal = A.Base.create('form-builder-settings-modal', A.Base
         }
 
         this._eventToggleAdvancedContent = field.on('contentToggle', A.bind(this._updateSmallScreenButtons, this));
-
+        this._imageLoadEvent = field.on('status', A.bind(this._disableSaveButton, this));
         this._fieldBeingEdited = field;
+    },
+
+    /**
+     * Enable/Disable save button.
+     *
+     * @method _disableSaveButton
+     * @param {EventFacade} event
+     * @protected
+     */
+    _disableSaveButton: function(event) {
+        var saveButton = this._modal.get('boundingBox').one('.' + CSS_FIELD_SETTINGS_SAVE);
+
+        if (!event.ready) {
+                saveButton.addClass('disabled');
+        } else {
+            saveButton.removeClass('disabled');
+        }
     },
 
     /**
