@@ -1,6 +1,6 @@
 # AUI Form Builder
 
-> Documentation and test modifications are not included in this changelog. For more details, see [full commit history](https://github.com/liferay/alloy-ui/commits/master/src/aui-form-builder).
+> Documentation and test modifications are not included in this changelog. For more details, see [full commit history](https://github.com/liferay/alloy-ui/commits/master-deprecated/src/aui-form-builder-deprecated).
 
 ## @VERSION@
 
@@ -8,6 +8,7 @@ No registries yet.
 
 ## [3.0.1](https://github.com/liferay/alloy-ui/releases/tag/3.0.1)
 
+* [AUI-1867](https://issues.liferay.com/browse/AUI-1867) [Deprecated] aui-form-builder-deprecated
 * [AUI-1781](https://issues.liferay.com/browse/AUI-1781) Radio field is being automatically selected after it's dragged and dropped in the Form Builder
 * [AUI-1747](https://issues.liferay.com/browse/AUI-1747) Change size of form-builder columns for large screens
 

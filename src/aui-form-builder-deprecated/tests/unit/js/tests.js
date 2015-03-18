@@ -1,6 +1,6 @@
-YUI.add('aui-form-builder-tests', function(Y) {
+YUI.add('aui-form-builder-deprecated-tests', function(Y) {
 
-    var suite = new Y.Test.Suite('aui-form-builder');
+    var suite = new Y.Test.Suite('aui-form-builder-deprecated');
 
     var radioField = new Y.FormBuilderRadioField({
         label: 'Colours',
@@ -94,5 +94,5 @@ YUI.add('aui-form-builder-tests', function(Y) {
     Y.Test.Runner.add(suite);
 
 }, '', {
-    requires: ['test', 'aui-form-builder']
+    requires: ['test', 'aui-form-builder-deprecated']
 });
