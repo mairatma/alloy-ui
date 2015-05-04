@@ -85,6 +85,15 @@ YUI.add('aui-toggler-base-tests', function(Y) {
 
             toggler.animate({ duration: 0 });
             Y.Assert.isTrue(this.togglerHasClass('toggler-content-expanded'));
+        },
+
+        'should wrap content when expanded is set to true': function() {
+            var toggler = this._toggler;
+
+            toggler.set('expanded' , true);
+
+            Y.Assert.isTrue(toggler.wrapped);
+            Y.Assert.isTrue(this.togglerHasClass('toggler-content-expanded'));
         }
     }));
 
