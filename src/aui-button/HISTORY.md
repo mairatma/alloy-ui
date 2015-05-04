@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-1873](https://issues.liferay.com/browse/AUI-1873) aui button visible does not output proper css class
 * [AUI-1806](https://issues.liferay.com/browse/AUI-1806) Add button to cancel editing/creating a field
 * [AUI-1793](https://issues.liferay.com/browse/AUI-1793) Fix date field bug with the boolean data editors
 * [AUI-1724](https://issues.liferay.com/browse/AUI-1724) Improve aui-boolean-data-editor's appearance

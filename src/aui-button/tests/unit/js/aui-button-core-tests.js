@@ -32,7 +32,7 @@ YUI.add('aui-button-core-tests', function(Y) {
         'should update icon': function() {
             var button = this._button,
                 oldIcon = button.get('icon');
-            
+
             button.set('icon', 'glyphicon glyphicon-print');
             Y.Assert.areNotEqual(oldIcon, button.get('icon'));
         },
@@ -51,6 +51,31 @@ YUI.add('aui-button-core-tests', function(Y) {
 
             button.set('icon');
             Y.Assert.areNotEqual(oldIcon, button.get('icon'));
+        },
+
+        'showing a button should set the `visible` attribute to `false`': function () {
+            var button = this._button,
+                node = button.getNode();
+
+            Y.Assert.isTrue(button.get('visible'));
+            Y.Assert.isFalse(node.hasClass('yui3-btn-hidden'));
+
+            button.set('visible', false);
+            Y.Assert.isFalse(button.get('visible'));
+            Y.Assert.isTrue(node.hasClass('yui3-btn-hidden'));
+        },
+
+        'showing a button should set the `visible` attribute to `true`': function () {
+            var button = this._button,
+                node = button.getNode();
+
+            button.hide();
+            Y.Assert.isFalse(button.get('visible'));
+            Y.Assert.isTrue(node.hasClass('yui3-btn-hidden'));
+
+            button.show();
+            Y.Assert.isTrue(button.get('visible'));
+            Y.Assert.isFalse(node.hasClass('yui3-btn-hidden'));
         }
     }));
 
