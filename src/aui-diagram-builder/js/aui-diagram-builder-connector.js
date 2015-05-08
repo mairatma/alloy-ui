@@ -529,11 +529,11 @@ A.Connector = A.Base.create('line', A.Base, [], {
             var shapeArrowHover = instance.get(SHAPE_ARROW_HOVER);
 
             if (shapeHover) {
-                instance._updateShape(instance.shape, shapeHover);
+                instance._updateShape(instance.shape, shapeHover, false);
             }
 
             if (shapeArrowHover) {
-                instance._updateShape(instance.shapeArrow, shapeArrowHover);
+                instance._updateShape(instance.shapeArrow, shapeArrowHover, false);
             }
         }
     },
@@ -549,8 +549,8 @@ A.Connector = A.Base.create('line', A.Base, [], {
         var instance = this;
 
         if (!instance.get(SELECTED)) {
-            instance._updateShape(instance.shape, instance.get(SHAPE));
-            instance._updateShape(instance.shapeArrow, instance.get(SHAPE_ARROW));
+            instance._updateShape(instance.shape, instance.get(SHAPE), false);
+            instance._updateShape(instance.shapeArrow, instance.get(SHAPE_ARROW), false);
         }
     },
 
@@ -566,7 +566,7 @@ A.Connector = A.Base.create('line', A.Base, [], {
 
         if (!A.instanceOf(val, A.Node)) {
             val = new A.Node.create(val);
-            instance.get(BUILDER).canvas.append(val.unselectable());
+            instance.get(BUILDER).dropContainer.append(val.unselectable());
         }
 
         return val;
@@ -630,7 +630,7 @@ A.Connector = A.Base.create('line', A.Base, [], {
     _uiSetName: function(val) {
         var instance = this;
 
-        instance.get(NODE_NAME).html(val);
+        instance.get(NODE_NAME).html(A.Escape.html(val));
     },
 
     /**

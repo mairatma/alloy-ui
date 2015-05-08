@@ -146,7 +146,7 @@ var SchedulerWeekView = A.Component.create({
         getNextDate: function() {
             var instance = this;
             var scheduler = instance.get(SCHEDULER);
-            var viewDate = scheduler.get(VIEW_DATE);
+            var viewDate = DateMath.safeClearTime(scheduler.get(VIEW_DATE));
 
             return DateMath.toLastHour(DateMath.add(viewDate, DateMath.WEEK, 1));
         },
@@ -216,7 +216,7 @@ var SchedulerWeekView = A.Component.create({
 
             var endDateLabel = A.DataType.Date.format(
                 endDate, {
-                    format: (DateMath.isMonthOverlapWeek(date) ? '%B %d' : '%d') + ', %Y',
+                    format: (DateMath.isMonthOverlapWeek(startDate) ? '%B %d' : '%d') + ', %Y',
                     locale: locale
                 }
             );

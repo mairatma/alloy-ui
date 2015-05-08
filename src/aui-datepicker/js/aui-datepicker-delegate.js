@@ -85,7 +85,12 @@ DatePickerDelegate.prototype = {
 
             container.delegate(
                 CLICK,
-                A.bind('_onceUserInteractionRelease', instance), trigger)
+                A.bind('_onceUserInteractionRelease', instance), trigger),
+
+            container.delegate(
+                'key',
+                A.bind('_handleTabKeyEvent', instance), 'tab', trigger)
+
         ];
 
         instance.publish(
@@ -188,7 +193,17 @@ DatePickerDelegate.prototype = {
     },
 
     /**
-     * TODO. Wanna help? Please send a Pull Request.
+    * Handles tab key events
+    *
+    * @method _handleTabKeyEvent
+    * @protected
+    */
+    _handleTabKeyEvent: function() {
+        this.hide();
+    },
+
+    /**
+     * Fires once user interacts.
      *
      * @method _onceUserInteraction
      * @param event

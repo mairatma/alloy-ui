@@ -369,11 +369,15 @@ var DiagramBuilder = A.Component.create({
                 }
             });
 
+            canvas.on(MOUSEDOWN, A.bind(instance._onCanvasMouseDown, instance));
             canvas.on(MOUSEENTER, A.bind(instance._onCanvasMouseEnter, instance));
+
+            instance.handlerKeyDown = A.getDoc().on('keydown', A.bind(instance._afterKeyEvent, instance));
 
             instance.handlerKeyDown = A.getDoc().on(KEYDOWN, A.bind(instance._afterKeyEvent, instance));
 
             instance.dropContainer.delegate(CLICK, A.bind(instance._onNodeClick, instance), _DOT + CSS_DIAGRAM_NODE);
+            instance.dropContainer.delegate(MOUSEDOWN, A.bind(instance._onCloseButtonMouseDown, instance), '.diagram-builder-controls button');
             instance.dropContainer.delegate(MOUSEENTER, A.bind(instance._onNodeMouseEnter, instance), _DOT +
                 CSS_DIAGRAM_NODE);
             instance.dropContainer.delegate(MOUSELEAVE, A.bind(instance._onNodeMouseLeave, instance), _DOT +
@@ -391,6 +395,8 @@ var DiagramBuilder = A.Component.create({
 
             A.DiagramBuilder.superclass.renderUI.apply(this, arguments);
 
+            instance._setupFieldsDrag();
+
             instance._renderGraphic();
         },
 
@@ -404,8 +410,6 @@ var DiagramBuilder = A.Component.create({
             var instance = this;
 
             A.DiagramBuilder.superclass.syncUI.apply(this, arguments);
-
-            instance._setupFieldsDrag();
 
             instance.syncConnectionsUI();
 
@@ -912,6 +916,22 @@ var DiagramBuilder = A.Component.create({
         },
 
         /**
+         * Deletes the Selected `diagramNode` and any connectors attached to it.
+         *
+         * @method _deleteSelectedNode
+         * @param event {Event.Facade} Event Facade object
+         * @protected
+         */
+        _deleteSelectedNode: function(event) {
+            var instance = this;
+
+            instance.deleteSelectedConnectors();
+            instance.deleteSelectedNode();
+
+            event.halt();
+        },
+
+        /**
          * TODO. Wanna help? Please send a Pull Request.
          *
          * @method _onCancel
@@ -938,6 +958,23 @@ var DiagramBuilder = A.Component.create({
         },
 
         /**
+         * Handles `mousedown` events on the diagram close button.
+         *
+         * @method _onCloseButtonMouseDown
+         * @param event
+         * @protected
+         */
+        _onCloseButtonMouseDown: function(event) {
+            var instance = this;
+
+            var diagramNode = event.currentTarget.ancestor(_DOT + DIAGRAM_NODE_NAME);
+
+            if (isDiagramNode(A.Widget.getByNode(diagramNode))) {
+                instance._deleteSelectedNode(event);
+            }
+        },
+
+        /**
          * TODO. Wanna help? Please send a Pull Request.
          *
          * @method _onDeleteKey
@@ -945,11 +982,14 @@ var DiagramBuilder = A.Component.create({
          * @protected
          */
         _onDeleteKey: function(event) {
-            var instance = this;
+            var instance = this,
+                selectedConnectors = instance.getSelectedConnectors();
 
             if (isDiagramNode(A.Widget.getByNode(event.target))) {
+                instance._deleteSelectedNode(event);
+            }
+            else if (selectedConnectors.length > 0) {
                 instance.deleteSelectedConnectors();
-                instance.deleteSelectedNode();
 
                 event.halt();
             }
@@ -1171,11 +1211,8 @@ var DiagramBuilder = A.Component.create({
          */
         _renderGraphic: function() {
             var instance = this;
-            var graphic = instance.get(GRAPHIC);
-            var canvas = instance.get(CANVAS);
 
-            graphic.render(canvas);
-            A.one(canvas).on(MOUSEDOWN, A.bind(instance._onCanvasMouseDown, instance));
+            instance.get(GRAPHIC).render(instance.dropContainer);
         },
 
         /**
@@ -1233,11 +1270,12 @@ var DiagramBuilder = A.Component.create({
        },
                             {
                                 cfg: {
-                                    scrollDelay: 150
+                                    scrollDelay: 150,
+                                    node: dropContainer
                                 },
-                                fn: A.Plugin.DDWinScroll
-       }
-      ]
+                                fn: A.Plugin.DDNodeScroll
+                            }
+                        ]
                     },
                     nodes: _DOT + CSS_DIAGRAM_NODE
                 },
@@ -1858,6 +1896,11 @@ var DiagramNode = A.Component.create({
 
                     connector = new A.Connector(
                         A.merge({
+                            after: {
+                                selectedChange: function() {
+                                    instance.alignTransition(transition);
+                                }
+                            },
                             builder: builder,
                             graphic: builder.get(GRAPHIC),
                             transition: transition
@@ -2611,7 +2654,7 @@ var DiagramNode = A.Component.create({
 
             instance.labelNode = A.Node.create(
                 Lang.sub(instance.LABEL_TEMPLATE, {
-                    label: instance.get('name')
+                    label: A.Escape.html(instance.get('name'))
                 })
             );
 
@@ -2736,10 +2779,10 @@ var DiagramNode = A.Component.create({
             var instance = this;
             var boundingBox = instance.get(BOUNDING_BOX);
 
-            boundingBox.setAttribute(DATA_NODE_ID, A.DiagramNode.buildNodeId(val));
+            boundingBox.setAttribute(DATA_NODE_ID, A.Escape.html(A.DiagramNode.buildNodeId(val)));
 
             if (instance.get('rendered')) {
-                instance.labelNode.setContent(val);
+                instance.labelNode.setContent(A.Escape.html(val));
             }
         },
 

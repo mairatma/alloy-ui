@@ -958,13 +958,13 @@ var FormValidator = A.Component.create({
          */
         _defErrorFieldFn: function(event) {
             var instance = this,
-                ancestor,
                 field,
-                nextSibling,
+                label,
                 stackContainer,
                 target,
                 validator;
 
+            label = instance.get(LABEL_CSS_CLASS);
             validator = event.validator;
             field = validator.field;
 
@@ -975,14 +975,8 @@ var FormValidator = A.Component.create({
 
                 stackContainer = instance.getFieldStackErrorContainer(field);
 
-                nextSibling = field.get('nextSibling');
-
-                if (nextSibling && nextSibling.get('nodeType') === 3) {
-                    ancestor = field.ancestor();
-
-                    if (ancestor && ancestor.hasClass(instance.get(LABEL_CSS_CLASS))) {
-                        target = nextSibling;
-                    }
+                if (A.FormValidator.isCheckable(target)) {
+                    target = field.ancestor('.' + CSS_ERROR).get('lastChild');
                 }
 
                 target.placeAfter(stackContainer);
@@ -1058,7 +1052,26 @@ var FormValidator = A.Component.create({
         },
 
         /**
-         * TODO. Wanna help? Please send a Pull Request.
+         * Finds the label text of a field if existing.
+         *
+         * @method _findFieldLabel
+         * @param field
+         * @return {String}
+         */
+        _findFieldLabel: function(field) {
+            var labelCssClass = '.' + this.get('labelCssClass'),
+                label =  A.one('label[for=' + field.get('id') + ']') ||
+                    field.ancestor().previous(labelCssClass) ||
+                    field.ancestor('.' + CSS_ERROR).one(labelCssClass);
+
+            if (label) {
+                return label.get('text');
+            }
+        },
+
+        /**
+         * Sets the error/success CSS classes based on the validation of a
+         * field.
          *
          * @method _highlightHelper
          * @param field

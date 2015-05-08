@@ -10,6 +10,7 @@ var Lang = A.Lang,
     isArray = Lang.isArray,
 
     AArray = A.Array,
+    AEscape = A.Escape,
 
     ACCEPT_CHILDREN = 'acceptChildren',
     EDITOR = 'editor',
@@ -263,7 +264,7 @@ var FormBuilderMultipleChoiceField = A.Component.create({
                 options = instance.get(OPTIONS);
 
             instance.predefinedValueEditor = new A.DropDownCellEditor({
-                options: getEditorOptions(options)
+                options: instance._getPredefinedValuesOptions(options)
             });
         },
 
@@ -312,7 +313,10 @@ var FormBuilderMultipleChoiceField = A.Component.create({
                     editable: true,
                     on: {
                         optionsChange: function(event) {
-                            instance.predefinedValueEditor.set(OPTIONS, event.newVal);
+                            var values = instance._normalizeValues(event.newVal);
+
+                            values = instance._getPredefinedValuesOptions(values);
+                            instance.predefinedValueEditor.set(OPTIONS, values);
                         }
                     },
                     options: getEditorOptions(options),
@@ -362,7 +366,39 @@ var FormBuilderMultipleChoiceField = A.Component.create({
         },
 
         /**
-         * TODO. Wanna help? Please send a Pull Request.
+         * Returns a list of predefined values with an empty option
+         *
+         * @method _getPredefinedValuesOptions
+         * @param options
+         * @protected
+         */
+        _getPredefinedValuesOptions: function(options) {
+            var emptyOption = {
+                label: _EMPTY_STR,
+                value: _EMPTY_STR
+            };
+
+            return getEditorOptions([emptyOption].concat(options));
+        },
+
+        /**
+         * Returns an array of objects with values
+         *
+         * @method _normalizeValues
+         * @param values
+         * @protected
+         */
+        _normalizeValues: function(values) {
+            return A.map(values, function(label, value) {
+                return {
+                    label: label,
+                    value: value
+                }
+            });
+        },
+
+        /**
+         * Set the `options` attribute on the UI.
          *
          * @method _uiSetOptions
          * @param val
@@ -379,8 +415,8 @@ var FormBuilderMultipleChoiceField = A.Component.create({
                     buffer.push(
                         Lang.sub(
                             instance.get(OPTION_TEMPLATE), {
-                                label: item.label,
-                                value: item.value
+                                label: AEscape.html(item.label),
+                                value: AEscape.html(item.value)
                             }
                         )
                     );
@@ -414,7 +450,7 @@ var FormBuilderMultipleChoiceField = A.Component.create({
             optionNodes.set(SELECTED, false);
 
             AArray.each(val, function(item) {
-                optionNodes.filter('[value="' + item + '"]').set(SELECTED, true);
+                optionNodes.filter('[value="' + AEscape.html(item) + '"]').set(SELECTED, true);
             });
         }
     }

@@ -14,6 +14,9 @@ var L = A.Lang,
     SCROLL_LEFT = 'scrollLeft',
     SCROLL_TOP = 'scrollTop';
 
+    A.Node.DOM_EVENTS.compositionend = 1;
+    A.Node.DOM_EVENTS.compositionstart = 1;
+
 /**
  *
  * A base class for CharCounter, providing:
@@ -60,8 +63,19 @@ var CharCounter = A.Component.create({
         },
 
         /**
-         * Max number of characters the <a
-         * href="CharCounter.html#config_input">input</a> can have.
+         * Node or Selector for the input field. Required.
+         *
+         * @attribute input
+         * @default null
+         * @type {Node | String}
+         */
+        input: {
+            setter: A.one
+        },
+
+        /**
+         * Max number of characters the [input](A.CharCounter.html#attr_input)
+         * can have.
          *
          * @attribute maxLength
          * @default Infinity
@@ -72,19 +86,8 @@ var CharCounter = A.Component.create({
             setter: function(v) {
                 return this._setMaxLength(v);
             },
-            value: Infinity,
-            validator: isNumber
-        },
-
-        /**
-         * Node or Selector for the input field. Required.
-         *
-         * @attribute input
-         * @default null
-         * @type {Node | String}
-         */
-        input: {
-            setter: A.one
+            validator: isNumber,
+            value: Infinity
         }
     },
 
@@ -100,14 +103,23 @@ var CharCounter = A.Component.create({
     prototype: {
 
         /**
-         * Event handler for the input <a
-         * href="module_aui-event.html">aui-event</a> event.
+         * Holds the event handles for any bind event from the internal
+         * implementation.
          *
-         * @property handler
-         * @type EventHandle
+         * @property _eventHandles
+         * @type {Array}
          * @protected
          */
-        handler: null,
+        _eventHandles: null,
+
+        /**
+         * Tracks whether input is being manipulated by an IME tool.
+         *
+         * @property _inputComposition
+         * @type {Boolean}
+         * @protected
+         */
+        _inputComposition: false,
 
         /**
          * Construction logic executed during CharCounter instantiation. Lifecycle.
@@ -138,8 +150,12 @@ var CharCounter = A.Component.create({
             instance.after('maxLengthChange', instance.checkLength);
 
             if (input) {
-                // use cross browser input-handler event
-                instance.handler = input.on(INPUT, A.bind(instance._onInputChange, instance));
+                instance._eventHandles = [
+                    input.on('compositionend', A.bind(instance._onInputCompositionEnd, instance)),
+                    input.on('compositionstart', A.bind(instance._onInputCompositionStart, instance)),
+                    // use cross browser input-handler event
+                    input.on(INPUT, A.bind(instance._onInputChange, instance))
+                ];
             }
         },
 
@@ -156,9 +172,9 @@ var CharCounter = A.Component.create({
             if (counter) {
                 var value = instance.get(INPUT).val();
 
-                counter.html(
-                    instance.get(MAX_LENGTH) - value.length
-                );
+                var counterValue = instance.get(MAX_LENGTH) - instance._getNormalizedLength(value);
+
+                counter.html(counterValue);
             }
         },
 
@@ -172,9 +188,7 @@ var CharCounter = A.Component.create({
         destroy: function() {
             var instance = this;
 
-            if (instance.handler) {
-                instance.handler.detach();
-            }
+            (new A.EventHandle(instance._eventHandles)).detach();
         },
 
         /**
@@ -187,31 +201,58 @@ var CharCounter = A.Component.create({
          */
         checkLength: function() {
             var instance = this;
+
             var input = instance.get(INPUT);
-            var maxLength = instance.get(MAX_LENGTH);
 
-            if (!input) {
-                return false; // NOTE: return
+            if (input) {
+                var maxLength = instance.get(MAX_LENGTH);
+                var value = input.val();
+
+                var normalizedLength = instance._getNormalizedLength(value);
+
+                if (normalizedLength > maxLength) {
+                    var scrollTop = input.get('scrollTop');
+                    var scrollLeft = input.get('scrollLeft');
+
+                    var trimLength = maxLength - (normalizedLength - value.length);
+
+                    value = value.substring(0, trimLength);
+
+                    input.val(value);
+
+                    input.set(SCROLL_TOP, scrollTop);
+                    input.set(SCROLL_LEFT, scrollLeft);
+                }
+
+                instance.syncUI();
+
+                if (normalizedLength >= maxLength) {
+                    instance.fire('maxLength');
+                }
+            }
+            else {
+                return false;
+            }
+        },
+
+        /**
+         * Normalize reported length between browsers.
+         *
+         * @method _getNormalizedLength
+         * @param {String} value.
+         * @protected
+         * @return {Number}
+         */
+        _getNormalizedLength: function(value) {
+            var newLines = value.match(/(\r\n|\n|\r)/g);
+
+            var newLinesCorrection = 0;
+
+            if (newLines !== null) {
+                newLinesCorrection = newLines.length;
             }
 
-            var value = input.val();
-            var scrollTop = input.get(SCROLL_TOP);
-            var scrollLeft = input.get(SCROLL_LEFT);
-
-            if (value.length > maxLength) {
-                input.val(
-                    value.substring(0, maxLength)
-                );
-            }
-
-            if (value.length == maxLength) {
-                instance.fire('maxLength');
-            }
-
-            input.set(SCROLL_TOP, scrollTop);
-            input.set(SCROLL_LEFT, scrollLeft);
-
-            instance.syncUI();
+            return value.length + newLinesCorrection;
         },
 
         /**
@@ -224,7 +265,37 @@ var CharCounter = A.Component.create({
         _onInputChange: function(event) {
             var instance = this;
 
+            if (!instance._inputComposition) {
+                instance.checkLength();
+            }
+        },
+
+        /**
+         * Fired on input when `compositionend` event occurs.
+         *
+         * @method _onInputCompositionEnd
+         * @param {EventFacade} event
+         * @protected
+         */
+        _onInputCompositionEnd: function() {
+            var instance = this;
+
+            instance._inputComposition = false;
+
             instance.checkLength();
+        },
+
+        /**
+         * Fired on input when `compositionstart` event occurs.
+         *
+         * @method _onInputCompositionStart
+         * @param {EventFacade} event
+         * @protected
+         */
+        _onInputCompositionStart: function() {
+            var instance = this;
+
+            instance._inputComposition = true;
         },
 
         /**
