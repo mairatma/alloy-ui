@@ -829,10 +829,8 @@ A.mix(TreeData.prototype, {
                         jsonNode.children = children;
 
                         node.childrenLength = children.length;
+                        node.set('children', children);
 
-                        A.setTimeout(function() {
-                            node.set('children', children);
-                        }, 50);
                     }
                 }
 
