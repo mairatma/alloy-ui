@@ -143,29 +143,12 @@ YUI.add('aui-form-builder-tests', function(Y) {
             this._formBuilder = new Y.FormBuilder().render('#container');
 
             Y.Assert.isNotNull(this._formBuilder.get('layout'));
-            Y.Assert.areEqual(1, this._formBuilder.get('layout').get('rows').length);
-        },
-
-        'should show message if layout is empty': function() {
-            this.createFormBuilder({
-                layout: new Y.Layout()
-            });
-
-            Y.Assert.areEqual('block', Y.one('.form-builder-empty-layout').getStyle('display'));
+            Y.Assert.areEqual(2, this._formBuilder.get('layout').get('rows').length);
         },
 
         'should not show message if layout is not empty': function() {
             this.createFormBuilder();
 
-            Y.Assert.areEqual('none', Y.one('.form-builder-empty-layout').getStyle('display'));
-        },
-
-        'should hide empty layout message when layout gains rows': function() {
-            this.createFormBuilder({
-                layout: new Y.Layout()
-            });
-
-            this._clickAddRowButton();
             Y.Assert.areEqual('none', Y.one('.form-builder-empty-layout').getStyle('display'));
         },
 
@@ -188,7 +171,7 @@ YUI.add('aui-form-builder-tests', function(Y) {
         'should add page break to layout that doesn\'t have one': function() {
             this.createFormBuilder();
 
-            Y.Assert.areEqual(2, Y.all('.layout-row').size());
+            Y.Assert.areEqual(3, Y.all('.layout-row').size());
         },
 
         'should not add page break to layout that has one': function() {
@@ -200,7 +183,7 @@ YUI.add('aui-form-builder-tests', function(Y) {
                 })
             });
 
-            Y.Assert.areEqual(1, Y.all('.layout-row').size());
+            Y.Assert.areEqual(2, Y.all('.layout-row').size());
         },
 
         'should add a new page break on form': function() {
@@ -243,14 +226,15 @@ YUI.add('aui-form-builder-tests', function(Y) {
         'should update quantity value of all pages break on form': function() {
             var formBuilder = this.createFormBuilder();
 
+            Y.Assert.areEqual('Untitled Page 1/' + 1, Y.one('.form-builder-page-break-title').get('value'));
+
             formBuilder.get('contentBox').one('.form-builder-add-page-break').simulate('click');
 
-            Y.Assert.areEqual(2, Y.one('.form-builder-page-break-quantity').get('text'));
+            Y.Assert.areEqual('Untitled Page 1/' + 2, Y.one('.form-builder-page-break-title').get('value'));
 
-            this._clickAddRowButton();
             formBuilder.get('contentBox').one('.form-builder-add-page-break').simulate('click');
             formBuilder.get('contentBox').one('.form-builder-add-page-break').simulate('click');
-            Y.Assert.areEqual(4, Y.one('.form-builder-page-break-quantity').get('text'));
+            Y.Assert.areEqual('Untitled Page 1/' + 4, Y.one('.form-builder-page-break-title').get('value'));
         },
 
         'should update page breaks when one is removed': function() {
@@ -262,11 +246,11 @@ YUI.add('aui-form-builder-tests', function(Y) {
 
             this._formBuilder.set('mode', Y.FormBuilder.MODES.LAYOUT);
 
-            row = this._formBuilder.get('layout').get('rows')[2];
+            row = this._formBuilder.get('layout').get('rows')[3];
             this._formBuilder.get('layout').removeRow(row);
             Y.Assert.areEqual(2, Y.all('.form-builder-page-break-row').size());
 
-            row = this._formBuilder.get('layout').get('rows')[2];
+            row = this._formBuilder.get('layout').get('rows')[3];
             Y.Assert.areEqual(2, row.get('index'));
             Y.Assert.areEqual(2, row.get('quantity'));
         },
@@ -410,7 +394,7 @@ YUI.add('aui-form-builder-tests', function(Y) {
             this.createFormBuilder();
 
             Y.Assert.areEqual(
-                2,
+                5,
                 Y.one('.form-builder-layout').all('.form-builder-empty-col').size()
             );
         },
@@ -442,7 +426,7 @@ YUI.add('aui-form-builder-tests', function(Y) {
             }));
 
             Y.Assert.areEqual(
-                3,
+                6,
                 Y.one('.form-builder-layout').all('.form-builder-empty-col').size()
             );
         },
@@ -461,7 +445,7 @@ YUI.add('aui-form-builder-tests', function(Y) {
             ]);
 
             Y.Assert.areEqual(
-                1,
+                4,
                 Y.one('.form-builder-layout').all('.form-builder-empty-col').size()
             );
         },
@@ -786,6 +770,70 @@ YUI.add('aui-form-builder-tests', function(Y) {
 
             this.createFormBuilder(config);
             Y.Assert.isTrue(Y.instanceOf(this._formBuilder.get('layout'), Y.Layout));
+        },
+
+        'should fire create event after a new field has been created': function() {
+            var created = false,
+                field;
+
+            this.createFormBuilder();
+            this._formBuilder.on('create', function (event) {
+                field = event.field;
+                created = true;
+            });
+
+            this._clickCreateNewField();
+            Y.Assert.isFalse(created);
+
+            this._clickFieldType();
+            Y.Assert.isFalse(created);
+
+            this._clickFieldSettingsSaveButton();
+            Y.Assert.isTrue(created);
+
+            Y.Assert.areEqual(Y.one('.form-builder-field').getData('field-instance'), field);
+        },
+
+        'should fire edit event after a field has been edited': function() {
+            var edited = false,
+                field,
+                settingsPane;
+
+            this.createFormBuilder();
+            this._formBuilder.on('edit', function (event) {
+                Y.Assert.areEqual(field, event.field);
+                edited = true;
+            });
+
+            field = Y.one('.form-builder-field-nested .form-builder-field').getData('field-instance');
+            this._formBuilder.editField(field);
+            Y.Assert.isFalse(edited);
+
+            settingsPane = Y.one('.form-builder-field-settings');
+            settingsPane.all('.radio-group-data-editor-button').item(1).simulate('click');
+
+            Y.Assert.isFalse(edited);
+
+            this._clickFieldSettingsSaveButton();
+            Y.Assert.isTrue(edited);
+        },
+
+        'should fire remove event after a field has been removed': function() {
+            var col,
+                field,
+                removed = false;
+
+            this.createFormBuilder();
+            this._formBuilder.on('remove', function (event) {
+                Y.Assert.areEqual(field, event.field);
+                removed = true;
+            });
+
+            field = Y.one('.form-builder-field').getData('field-instance');
+            col = field.get('content').ancestor('.col').getData('layout-col');
+
+            this._formBuilder.removeField(field);
+            Y.Assert.isTrue(removed);
         }
     }));
 

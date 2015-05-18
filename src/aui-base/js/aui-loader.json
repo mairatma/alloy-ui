@@ -884,6 +884,8 @@
             "aui-layout-col",
             "aui-layout-row",
             "base",
+            "event-focus",
+            "event-valuechange",
             "node-base"
         ],
         "skinnable": true
@@ -1496,7 +1498,8 @@
         "requires": [
             "aui-data-editor",
             "node-event-delegate"
-        ]
+        ],
+        "skinnable": true
     },
     "aui-rating": {
         "use": [
@@ -1792,7 +1795,8 @@
         "requires": [
             "aui-data-editor",
             "event-valuechange"
-        ]
+        ],
+        "skinnable": true
     },
     "aui-text-data-unicode": {
         "requires": [

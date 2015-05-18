@@ -37,7 +37,7 @@ var Lang = A.Lang,
 
     BUFFER_CSS_CLASS = [CSS_IFRAME_NODE],
 
-    TPL_IFRAME = '<iframe class="{cssClass}" frameborder="0" id="{id}" name="{id}" src="{uri}"></iframe>',
+    TPL_IFRAME = '<iframe class="{cssClass}" frameborder="0" id="{id}" name="{id}" src="{uri}" data-tabindex="0" tabindex="-1"></iframe>',
 
     UI = A.Widget.UI_SRC,
     UI_SRC = {
