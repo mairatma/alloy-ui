@@ -168,24 +168,6 @@ var TreeView = A.Component.create({
         },
 
         /**
-         * Create Nodes.
-         *
-         * @method createNodes
-         * @param nodes
-         */
-        createNodes: function(nodes) {
-            var instance = this;
-
-            A.Array.each(A.Array(nodes), function(node) {
-                var newNode = instance.createNode(node);
-
-                instance.appendChild(newNode);
-            });
-
-            instance._syncPaginatorUI(nodes);
-        },
-
-        /**
          * Create the DOM structure for the TreeView. Lifecycle.
          *
          * @method renderUI
@@ -206,6 +188,18 @@ var TreeView = A.Component.create({
          */
         _afterSetChildren: function(event) {
             var instance = this;
+
+            var paginator = instance.get('paginator');
+
+            if (paginator && paginator.total) {
+                var increment = -1;
+
+                if (event.newVal.length > event.prevVal.length) {
+                    increment = 1;
+                }
+
+                paginator.total += increment;
+            }
 
             instance._syncPaginatorUI();
         },
@@ -234,12 +228,10 @@ var TreeView = A.Component.create({
                     ownerTree: instance
                 });
 
-                if (deepContainer) {
-                    // render node before invoke the recursion
-                    treeNode.render();
-
-                    // propagating markup recursion
-                    instance._createFromHTMLMarkup(deepContainer);
+                if (instance.get('lazyLoad')) {
+                    A.setTimeout(function() {
+                        treeNode.render();
+                    }, 50);
                 }
                 else {
                     treeNode.render();
@@ -255,6 +247,11 @@ var TreeView = A.Component.create({
 
                 // and simulate the appendChild.
                 parentInstance.appendChild(treeNode);
+
+                if (deepContainer) {
+                    // propagating markup recursion
+                    instance._createFromHTMLMarkup(deepContainer);
+                }
             });
         },
 
@@ -768,7 +765,7 @@ var TreeViewDD = A.Component.create({
             // cannot drop the dragged element into any of its children
             // nor above an undraggable element
             // using DOM contains method for performance reason
-            if ( !! dropTreeNode.get(DRAGGABLE) && !dragNode.contains(dropNode)) {
+            if (!!dropTreeNode.get(DRAGGABLE) && !dragNode.contains(dropNode)) {
                 // nArea splits the height in 3 areas top/center/bottom these
                 // areas are responsible for defining the state when the mouse
                 // is over any of them

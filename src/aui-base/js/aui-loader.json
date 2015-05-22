@@ -114,7 +114,7 @@
     "aui-base-html5-shiv": {
         "condition": {
             "name": "aui-base-html5-shiv",
-            "trigger": "aui-base",
+            "trigger": "node-base",
             "ua": "ie"
         }
     },
@@ -294,6 +294,7 @@
         "requires": [
             "datatable-base",
             "calendar",
+            "escape",
             "overlay",
             "sortable",
             "aui-datatype",
@@ -422,6 +423,7 @@
         "requires": [
             "arraylist-add",
             "arraylist-filter",
+            "escape",
             "json",
             "graphics",
             "dd"
@@ -430,6 +432,7 @@
     },
     "aui-diagram-builder-impl": {
         "requires": [
+            "escape",
             "overlay",
             "aui-map",
             "aui-diagram-builder-base",
@@ -448,15 +451,14 @@
     "aui-editable-deprecated": {
         "requires": [
             "aui-base-deprecated",
-            "aui-form-combobox-deprecated"
+            "aui-form-combobox-deprecated",
+            "escape"
         ],
         "skinnable": true
     },
     "aui-event": {
         "use": [
-            "aui-event-base",
-            "aui-event-delegate-change",
-            "aui-event-delegate-submit"
+            "aui-event-base"
         ]
     },
     "aui-event-base": {
@@ -465,6 +467,11 @@
         ]
     },
     "aui-event-delegate-change": {
+        "condition": {
+            "name": "aui-event-delegate-change",
+            "trigger": "event-base-ie",
+            "ua": "ie"
+        },
         "requires": [
             "aui-event-base",
             "event-delegate",
@@ -472,6 +479,11 @@
         ]
     },
     "aui-event-delegate-submit": {
+        "condition": {
+            "name": "aui-event-delegate-submit",
+            "trigger": "event-base-ie",
+            "ua": "ie"
+        },
         "requires": [
             "aui-event-base",
             "event-delegate",
@@ -482,7 +494,7 @@
         "condition": {
             "name": "aui-event-input",
             "test": "aui-event-input-test.js",
-            "trigger": "aui-event"
+            "trigger": "aui-event-base"
         },
         "requires": [
             "aui-event-base",
@@ -512,11 +524,13 @@
             "aui-form-builder-field-radio",
             "aui-form-builder-field-select",
             "aui-form-builder-field-text",
-            "aui-form-builder-field-textarea"
+            "aui-form-builder-field-textarea",
+            "aui-tooltip-base"
         ]
     },
     "aui-form-builder-base": {
         "requires": [
+            "escape",
             "transition",
             "aui-button",
             "aui-collection",
@@ -930,6 +944,13 @@
             "aui-aria"
         ]
     },
+    "aui-promise": {
+        "requires": [
+            "array-invoke",
+            "promise",
+            "oop"
+        ]
+    },
     "aui-rating": {
         "use": [
             "aui-rating-base",
@@ -1121,6 +1142,49 @@
             "plugin"
         ]
     },
+    "aui-surface": {
+        "use": [
+            "aui-surface-app",
+            "aui-surface-screen"
+        ]
+    },
+    "aui-surface-app": {
+        "requires": [
+            "event-delegate",
+            "node-event-html5",
+            "aui-surface-base",
+            "aui-surface-screen",
+            "aui-surface-screen-route"
+        ]
+    },
+    "aui-surface-base": {
+        "requires": [
+            "base-build",
+            "node-style",
+            "timers",
+            "aui-debounce",
+            "aui-promise",
+            "aui-parse-content"
+        ]
+    },
+    "aui-surface-screen": {
+        "requires": [
+            "base-build"
+        ]
+    },
+    "aui-surface-screen-html": {
+        "requires": [
+            "io",
+            "aui-promise",
+            "aui-surface-screen",
+            "aui-url"
+        ]
+    },
+    "aui-surface-screen-route": {
+        "requires": [
+            "base-build"
+        ]
+    },
     "aui-swf-deprecated": {
         "requires": [
             "querystring-parse-simple",
@@ -1163,8 +1227,7 @@
     },
     "aui-timepicker": {
         "requires": [
-            "autocomplete-list",
-            "autocomplete-list-keys",
+            "autocomplete",
             "aui-datepicker-delegate",
             "aui-datepicker-popover"
         ],
@@ -1223,7 +1286,8 @@
     },
     "aui-tooltip-base": {
         "requires": [
-            "event-mouseenter",
+            "escape",
+            "event-hover",
             "transition",
             "widget",
             "widget-autohide",

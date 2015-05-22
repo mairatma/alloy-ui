@@ -54,10 +54,14 @@ A.Modal = A.Base.create(MODAL, A.Widget, [
     A.WidgetToggle,
     A.WidgetAutohide,
     A.WidgetToolbars,
-    A.WidgetModality,
     A.WidgetPositionAlign,
     A.WidgetPositionConstrain,
-    A.WidgetStack
+    A.WidgetStack,
+
+    // WidgetModality needs to be added after all WidgetPosition augmentations
+    // to prevent it from focusing the modal before it's properly positioned,
+    // which would cause the viewport to scroll to the top.
+    A.WidgetModality
 ], {
 
     /**
@@ -71,6 +75,7 @@ A.Modal = A.Base.create(MODAL, A.Widget, [
 
         var eventHandles = [
             A.after(instance._afterFillHeight, instance, FILL_HEIGHT),
+            A.before(instance._beforeFillHeight, instance, FILL_HEIGHT),
             instance.after('resize:end', A.bind(instance._syncResizeDimensions, instance)),
             instance.after(DRAGGABLE_CHANGE, instance._afterDraggableChange),
             instance.after(RESIZABLE_CHANGE, instance._afterResizableChange),
@@ -197,6 +202,18 @@ A.Modal = A.Base.create(MODAL, A.Widget, [
             instance._userInteractionHandle = instance.once(
                 [CLICK, MOUSEMOVE], instance._onUserInitInteraction, instance);
         }
+    },
+
+    /**
+     * Fire before modal body height is set.
+     *
+     * @method _beforeFillHeight
+     * @protected
+     */
+    _beforeFillHeight: function() {
+        var instance = this;
+
+        instance._fillMaxHeight('none');
     },
 
     /**
