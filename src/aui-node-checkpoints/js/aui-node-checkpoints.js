@@ -38,7 +38,6 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
         };
 
         instance.bindResizeUI();
-
         instance.bindScrollUI();
 
         instance._handles = [instance._resizeHandler, instance._scrollHandler];
@@ -67,13 +66,10 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
 
         var refreshFn = A.bind(instance.refresh, instance);
 
-        var resizeHandler;
+        var resizeHandler = node.on('resize:end', refreshFn);
 
         if (isBody(node)) {
             resizeHandler = node.on('resize', A.debounce(refreshFn, instance.get('resizeDelay')));
-        }
-        else {
-            resizeHandler = node.on('resize:end', refreshFn);
         }
 
         instance._resizeHandler = resizeHandler;
@@ -87,40 +83,32 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
     bindScrollUI: function() {
         var instance = this;
 
-        var scrollHandler;
+        var scrollHandlerEvent = 'scroll';
 
         if (instance._triggerAtTheEnd) {
-            scrollHandler = instance._context.on(
-                (instance._axis === 'vertical') ? 'scrollToBottom' : 'scrollToRight',
-                function(event) {
-                    if (instance._enabled) {
-                        instance._scrollEvent = event;
+            scrollHandlerEvent = 'scrollToRight';
 
-                        instance._triggerCallback();
-                    }
-                },
-                instance
-            );
+            if (instance._axis === 'vertical') {
+                scrollHandlerEvent = 'scrollToBottom';
+            }
         }
         else {
             instance._reachedCheckpoint = instance.reachedCheckpoint();
-
-            scrollHandler = instance._context.on(
-                'scroll',
-                function(event) {
-                    if (instance._enabled) {
-                        instance._scrollEvent = event;
-
-                        if (instance._crossed()) {
-                            instance._triggerCallback();
-                        }
-                    }
-                },
-                instance
-            );
         }
 
-        instance._scrollHandler = scrollHandler;
+        instance._scrollHandler = instance._context.on(
+            scrollHandlerEvent,
+            function(event) {
+                if (instance._enabled) {
+                    instance._scrollEvent = event;
+
+                    if (instance._crossed() || instance._triggerAtTheEnd) {
+                        instance._triggerCallback();
+                    }
+                }
+            },
+            instance
+        );
     },
 
     /**
@@ -193,11 +181,7 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
     reachedCheckpoint: function() {
         var instance = this;
 
-        var scrollPosition = instance._getScrollPosition();
-
-        var triggerPosition = instance._getTriggerPosition();
-
-        return (scrollPosition >= triggerPosition);
+        return (instance._getScrollPosition() >= instance._getTriggerPosition());
     },
 
     /**
@@ -290,7 +274,13 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
 
         var scrollEvent = instance._scrollEvent;
 
-        return (instance._axis === 'vertical') ? scrollEvent.scrollTop : scrollEvent.scrollLeft;
+        var scroll = scrollEvent.scrollLeft;
+
+        if (instance._axis === 'vertical') {
+            scroll = scrollEvent.scrollTop;
+        }
+
+        return scroll;
     },
 
     /**
@@ -306,17 +296,23 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
         var triggerPosition = instance._triggerPosition;
 
         if (!triggerPosition) {
-            var offsetEdgeNameByAxis = (instance._axis === 'vertical') ? 'offsetTop' : 'offsetLeft';
+            var offsetEdgeNameByAxis = 'offsetLeft';
+
+            if (instance._axis === 'vertical') {
+                offsetEdgeNameByAxis = 'offsetTop';
+            }
 
             var offset = instance._node.get(offsetEdgeNameByAxis);
 
             var contextNode = instance._context.getNode();
 
-            var contextNodeOffset = isBody(contextNode) ? 0 : contextNode.get(offsetEdgeNameByAxis);
+            var contextNodeOffset = contextNode.get(offsetEdgeNameByAxis);
 
-            var optionalOffset = instance._offset;
+            if (isBody(contextNode)) {
+                contextNodeOffset = 0;
+            };
 
-            triggerPosition = offset - contextNodeOffset - optionalOffset;
+            triggerPosition = offset - contextNodeOffset - instance._offset;
 
             instance._triggerPosition = triggerPosition;
         }
@@ -347,9 +343,7 @@ A.Checkpoint = A.Base.create('checkpoint', A.Base, [], {
          */
         axis: {
             validator: function(val) {
-                return Lang.isString(val) &&
-                    (val === 'horizontal' ||
-                        val === 'vertical');
+                return Lang.isString(val) && (val === 'horizontal' || val === 'vertical');
             },
             value: 'vertical'
         },
