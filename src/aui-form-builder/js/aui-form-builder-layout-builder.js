@@ -141,7 +141,6 @@ A.FormBuilderLayoutBuilder.prototype = {
             addColMoveTarget: A.bind(this._addColMoveTarget, this),
             clickColMoveTarget: A.bind(this._clickColMoveTarget, this),
             container: this.get('contentBox').one('.' + CSS_LAYOUT),
-            enableRemoveCols: false,
             layout: this.getActiveLayout(),
             removeColMoveButtons: A.bind(this._removeColMoveButtons, this),
             removeColMoveTargets: A.bind(this._removeColMoveTargets, this)
@@ -156,6 +155,8 @@ A.FormBuilderLayoutBuilder.prototype = {
         this._eventHandles.push(
             this._fieldToolbar.on('onToolbarFieldMouseEnter', A.bind(this._onFormBuilderToolbarFieldMouseEnter, this))
         );
+
+        this._afterLayoutBuilderModeChange();
 
         this._removeLayoutCutColButtons();
 
@@ -285,6 +286,7 @@ A.FormBuilderLayoutBuilder.prototype = {
             this._layoutBuilder.setAttrs({
                 enableMoveCols: false,
                 enableMoveRows: true,
+                enableRemoveCols: true,
                 enableRemoveRows: true
             });
         }
@@ -303,6 +305,7 @@ A.FormBuilderLayoutBuilder.prototype = {
             this._layoutBuilder.setAttrs({
                 enableMoveCols: true,
                 enableMoveRows: false,
+                enableRemoveCols: false,
                 enableRemoveRows: false
             });
         }
