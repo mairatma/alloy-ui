@@ -79,7 +79,13 @@ A.LayoutCol = A.Base.create('layout-col', A.Base, [], {
      * @protected
      */
     _uiSetSize: function(size) {
-        this.get('node').addClass(BOOTSTRAP_CLASS_PREFIX + size);
+        if (size > 0) {
+            this.get('node').addClass(BOOTSTRAP_CLASS_PREFIX + size);
+            this.get('node').show();
+        }
+        else {
+            this.get('node').hide();
+        }
     },
 
     /**

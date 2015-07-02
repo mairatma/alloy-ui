@@ -144,6 +144,8 @@ A.FormBuilderLayoutBuilder.prototype = {
             this._fieldToolbar.on('onToolbarFieldMouseEnter', A.bind(this._onFormBuilderToolbarFieldMouseEnter, this))
         );
 
+        this._afterLayoutBuilderModeChange();
+
         this._removeLayoutCutColButtons();
 
         this._checkLastRow();
