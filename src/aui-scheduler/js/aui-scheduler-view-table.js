@@ -158,6 +158,27 @@ var SchedulerTableView = A.Component.create({
         },
 
         /**
+         * The element or locator to constrain the events overlay.
+         *
+         * When a cell has more events than can be shown, it offers an option
+         * to open an overlay to see all of them by clicking in a "See x more"
+         * link. This overlay should be constrained by another element, lest
+         * it could be cropped or would resize the entire document.
+         *
+         * The default value is `null`, in which case the overlay is constrained
+         * to the scheduler.
+         *
+         * @attribute eventsOverlayConstrain
+         * @default null
+         * @type {Node | String}
+         * @writeOnce
+         */
+        eventsOverlayConstrain: {
+            value: null,
+            writeOnce: true
+        },
+
+        /**
          * Indicates whether the height of the `SchedulerTableView` is fixed.
          *
          * @attribute fixedHeight
@@ -1169,7 +1190,13 @@ var SchedulerTableView = A.Component.create({
          */
         _renderEventsOverlay: function() {
             var instance = this;
+            var scheduler = instance.get('scheduler');
             var strings = instance.get('strings');
+            var constrain = instance.get('eventsOverlayConstrain');
+
+            if (constrain === null) {
+                constrain = scheduler.get('boundingBox');
+            }
 
             instance.eventsOverlay = new A.Overlay({
                 align: {
@@ -1180,6 +1207,7 @@ var SchedulerTableView = A.Component.create({
                         label: strings.close
                     }
                 ),
+                constrain: constrain,
                 render: instance.get('boundingBox'),
                 visible: false,
                 width: 250,

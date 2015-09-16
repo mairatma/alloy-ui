@@ -623,6 +623,56 @@ YUI.add('aui-scheduler-tests', function(Y) {
             );
         },
 
+        'should display the events overlay entirely': function() {
+            var events = [];
+
+            var displayDate = new Date(2014, 2, 8);
+            var eventDate = new Date(2014, 3, 5);
+
+            for (var i = 0; i < 10; i++) {
+                events.push(
+                    {
+                        color: 'c2a374',
+                        content: 'dummy ' + i,
+                        endDate: eventDate,
+                        startDate: eventDate,
+                        allDay: true
+                    }
+                );
+            }
+
+            this._createScheduler({
+              items: events,
+              date: displayDate,
+              activeView: this._monthView
+            });
+
+            Y.one('.scheduler-view-table-more').simulate('click');
+
+            var schedulerBB = this._scheduler.get('boundingBox');
+            var schedulerRect = schedulerBB._node.getBoundingClientRect();
+
+            var overlay = this._monthView.eventsOverlay;
+            var overlayBB = overlay.get('boundingBox');
+            var overlayRect = overlayBB._node.getBoundingClientRect();
+
+            Y.Assert.isTrue(
+                schedulerRect.top <= overlayRect.top,
+                'The top of the events overlay should be lower than the top of the scheduler.'
+            );
+            Y.Assert.isTrue(
+                overlayRect.bottom <= schedulerRect.bottom,
+                'The bottom of the events overlay should be higher than the bottom of the scheduler.'
+            );
+            Y.Assert.isTrue(
+                schedulerRect.left <= overlayRect.left,
+                'The left of the events overlay should come after the left of the scheduler.'
+            );
+            Y.Assert.isTrue(
+                overlayRect.right <= schedulerRect.right,
+                'The right of the events overlay should come before the right of the scheduler.'
+            );
+        }
     }));
 
     Y.Test.Runner.add(suite);
