@@ -49,8 +49,6 @@ A.mix(PositionAlignSuggestion.prototype, {
         top: [A.WidgetPositionAlign.BC, A.WidgetPositionAlign.TC]
     },
 
-    _hasAlignmentPoints: false,
-
     _lastPosition: null,
 
     /**
@@ -58,13 +56,10 @@ A.mix(PositionAlignSuggestion.prototype, {
      * instantiation. Lifecycle.
      *
      * @method initializer
+     * @protected
      */
-    initializer: function(config) {
+    initializer: function() {
         var instance = this;
-
-        if (config && config.align && config.align.points) {
-            instance._hasAlignmentPoints = true;
-        }
 
         A.on(instance._onUISetAlignPAS, instance, '_uiSetAlign');
 
@@ -88,8 +83,7 @@ A.mix(PositionAlignSuggestion.prototype, {
         if (alignNode) {
             align.node = alignNode;
         }
-
-        if (!instance._hasAlignmentPoints) {
+        if (!align.points) {
             align.points = instance._getAlignPointsSuggestion(
                 instance.get('position'));
         }
@@ -153,16 +147,16 @@ A.mix(PositionAlignSuggestion.prototype, {
     _findBestPosition: function(node) {
         var instance = this,
             position = instance.get('position'),
-            testPositions = [position, 'top', 'bottom', 'right', 'left'];
+            testPositions = [position, 'top', 'bottom', 'right', 'left'],
+            trigger = A.one(node);
 
-        if (node && !node.inViewportRegion()) {
-            return instance._findBestPositionOutsideViewport(node);
-        }
-        else {
+        if (trigger && !trigger.inViewportRegion()) {
+            return instance._findBestPositionOutsideViewport(trigger);
+        } else {
             testPositions = A.Array.dedupe(testPositions);
 
             A.Array.some(testPositions, function(testPosition) {
-                if (instance._canWidgetAlignToNode(node, testPosition)) {
+                if (instance._canWidgetAlignToNode(trigger, testPosition)) {
                     position = testPosition;
                     return true;
                 }
@@ -172,6 +166,14 @@ A.mix(PositionAlignSuggestion.prototype, {
         return position;
     },
 
+    /**
+     * Finds the better widget's position when its anchor is outside
+     * the view port.
+     *
+     * @method _findBestPositionOutsideViewport
+     * @param node
+     * @protected
+     */
     _findBestPositionOutsideViewport: function(node) {
         var instance = this,
             nodeRegion = instance._getRegion(node),
@@ -179,14 +181,11 @@ A.mix(PositionAlignSuggestion.prototype, {
 
         if (nodeRegion.top < region.top) {
             return 'bottom';
-        }
-        else if (nodeRegion.bottom > region.bottom) {
+        } else if (nodeRegion.bottom > region.bottom) {
             return 'top';
-        }
-        else if (nodeRegion.right > region.right) {
+        } else if (nodeRegion.right > region.right) {
             return 'left';
-        }
-        else if (nodeRegion.left < region.left) {
+        } else {
             return 'right';
         }
     },
