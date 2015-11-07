@@ -438,18 +438,6 @@ var FormValidator = A.Component.create({
         },
 
         /**
-         * If `true` the field will be validated on change event.
-         *
-         * @attribute validateOnChange
-         * @default true
-         * @type Boolean
-         */
-        validateOnChange: {
-            value: true,
-            validator: isBoolean
-        },
-
-        /**
          * If `true` the field will be validated on input event.
          *
          * @attribute validateOnInput
@@ -549,7 +537,6 @@ var FormValidator = A.Component.create({
 
             instance.bindUI();
             instance._uiSetValidateOnBlur(instance.get('validateOnBlur'));
-            instance._uiSetValidateOnChange(instance.get('validateOnChange'));
             instance._uiSetValidateOnInput(instance.get('validateOnInput'));
         },
 
@@ -587,7 +574,6 @@ var FormValidator = A.Component.create({
 
             instance.after({
                 extractRulesChange: instance._afterExtractRulesChange,
-                validateOnChange: instance._afterValidateOnChange,
                 validateOnBlurChange: instance._afterValidateOnBlurChange,
                 validateOnInputChange: instance._afterValidateOnInputChange
             });
@@ -1009,19 +995,6 @@ var FormValidator = A.Component.create({
         },
 
         /**
-         * Fires after `validateOnChange` attribute change.
-         *
-         * @method _afterValidateOnChange
-         * @param event
-         * @protected
-         */
-        _afterValidateOnChange: function(event) {
-            var instance = this;
-
-            instance._uiSetValidateOnChange(event.newVal);
-        },
-
-        /**
          * Fires after `validateOnBlur` attribute change.
          *
          * @method _afterValidateOnBlurChange
@@ -1396,30 +1369,6 @@ var FormValidator = A.Component.create({
             else {
                 if (instance._blurHandlers) {
                     instance._blurHandlers.detach();
-                }
-            }
-        },
-
-        /**
-         * TODO. Wanna help? Please send a Pull Request.
-         *
-         * @method _uiSetValidateOnChange
-         * @param val
-         * @protected
-         */
-        _uiSetValidateOnChange: function(val) {
-            var instance = this,
-                boundingBox = instance.get('boundingBox');
-
-            if (val) {
-                if (!instance._changeHandlers) {
-                    instance._changeHandlers = boundingBox.delegate('change', instance._onFieldInput,
-                        'input[type="file"]', instance);
-                }
-            }
-            else {
-                if (instance._changeHandlers) {
-                    instance._changeHandlers.detach();
                 }
             }
         }
