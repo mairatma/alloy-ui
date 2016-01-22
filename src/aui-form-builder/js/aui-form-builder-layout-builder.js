@@ -99,16 +99,12 @@ A.FormBuilderLayoutBuilder.prototype = {
      * Executed after the `layout:rowsChange` is fired.
      *
      * @method _afterLayoutBuilderColsChange
-     * @param {EventFacade} event
      * @protected
      */
-    _afterLayoutBuilderColsChange: function(event) {
-        var activeLayout = this.getActiveLayout(),
-            lastRow = this._getLastRow(activeLayout);
+    _afterLayoutBuilderColsChange: function() {
+        var activeLayout = this.getActiveLayout();
 
-        if (lastRow === event.target) {
-            this._checkLastRow(activeLayout);
-        }
+        this._checkLastRow(activeLayout);
     },
 
     /**
@@ -151,12 +147,30 @@ A.FormBuilderLayoutBuilder.prototype = {
      * @protected
      */
     _checkLastRow: function(layout) {
-        var lastRow = this._getLastRow(layout),
-            cols = lastRow.get('cols');
+        var cols,
+            lastRow,
+            nextToLast,
+            rows;
+
+        lastRow = this._getLastRow(layout);
+        cols = lastRow.get('cols');
 
         if (cols.length > 1 || (cols[0].get('value') &&
             cols[0].get('value').get('fields').length > 0)) {
             this._createLastRow(layout);
+        }
+        else {
+            rows = layout.get('rows');
+            nextToLast = rows[rows.length - 2];
+
+            if (nextToLast) {
+                cols = nextToLast.get('cols');
+
+                if (cols.length === 1 && (!cols[0].get('value') ||
+                    !cols[0].get('value').get('fields').length)) {
+                    layout.removeRow(nextToLast);
+                }
+            }
         }
 
         this._getLastRow(layout).set('removable', false);
