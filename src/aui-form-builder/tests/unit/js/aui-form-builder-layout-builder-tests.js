@@ -406,7 +406,7 @@ YUI.add('aui-form-builder-layout-builder-tests', function(Y) {
 
             this._formBuilder.render('#container');
             rowNodes = this._formBuilder.get('contentBox').all('.layout-row');
-            Y.Assert.areEqual(2, rowNodes.size());
+            Y.Assert.areEqual(1, rowNodes.size());
         },
 
         'should show valid field move targets for root field': function() {
@@ -609,6 +609,21 @@ YUI.add('aui-form-builder-layout-builder-tests', function(Y) {
             layout.get('rows')[0].get('cols')[0].get('value').addField(new Y.FormBuilderFieldSentence());
             Y.Assert.areEqual(2, layout.get('rows').length);
             Y.Assert.areEqual(1, layout.get('rows')[1].get('cols').length);
+        },
+
+        'should back to the initial state after all field are removed': function() {
+            var layout,
+                field = new Y.FormBuilderFieldSentence();
+
+            this._formBuilder = new Y.FormBuilder().render('#container');
+            layout = this._formBuilder.get('layouts')[0];
+            Y.Assert.areEqual(1, Y.all('.form-builder-field-list-add-button').size());
+
+            layout.get('rows')[0].get('cols')[0].get('value').addField(field);
+            Y.Assert.areEqual(3, Y.all('.form-builder-field-list-add-button').size());
+
+            layout.get('rows')[0].get('cols')[0].get('value').removeField(field);
+            Y.Assert.areEqual(1, Y.all('.form-builder-field-list-add-button').size());
         }
     }));
 
