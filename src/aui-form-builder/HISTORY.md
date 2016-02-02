@@ -4,6 +4,7 @@
 
 ## @VERSION@
 
+* [AUI-2073](https://issues.liferay.com/browse/AUI-2073) Set the tab order on Form Builder
 * [AUI-2033](https://issues.liferay.com/browse/AUI-2033) Change add/resize column icon
 * [AUI-2056](https://issues.liferay.com/browse/AUI-2056) User has to click multiple times to get Form Builder Field Toolbar active
 
