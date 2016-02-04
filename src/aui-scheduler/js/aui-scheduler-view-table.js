@@ -222,7 +222,28 @@ var SchedulerTableView = A.Component.create({
         },
 
         /**
-         * TODO. Wanna help? Please send a Pull Request.
+         * The element or locator to constrain the events overlay.
+         *
+         * When a cell has more events than can be shown, it offers an option
+         * to open an overlay to see all of them by clicking in a "See x more"
+         * link. This overlay should be constrained by another element, lest
+         * it could be cropped or would resize the entire document.
+         *
+         * The default value is `true`, in which case the overlay is constrained
+         * to the viewport.
+         *
+         * @attribute eventsOverlayConstrain
+         * @default null
+         * @type {Boolean | Node | String}
+         * @writeOnce
+         */
+        eventsOverlayConstrain: {
+            value: true,
+            writeOnce: true
+        },
+
+        /**
+         * Indicates whether the height of the `SchedulerTableView` is fixed.
          *
          * @attribute fixedHeight
          * @default true
@@ -485,7 +506,7 @@ var SchedulerTableView = A.Component.create({
                 var evtColNode = A.Node.create(TPL_SVT_TABLE_DATA_COL);
                 var evtNodeContainer = evtColNode.one(DIV);
 
-                if ((evtRenderedStack.length < events.length) && displayRows && (rowDisplayIndex === (displayRows - 1))) {
+                if (evt && (evtRenderedStack.length < events.length) && displayRows && (rowDisplayIndex === (displayRows - 1))) {
                     var strings = instance.get(STRINGS);
 
                     var showMoreEventsLink = A.Node.create(
@@ -746,11 +767,11 @@ var SchedulerTableView = A.Component.create({
          */
         loopDates: function(startDate, endDate, fn, incrementBy, factor) {
             var instance = this;
+            var countDays = DateMath.countDays(startDate, endDate) + 1;
             var curDate = DateMath.clone(startDate);
-            var endDateMs = endDate.getTime();
             var index;
 
-            for (index = 0; curDate.getTime() <= endDateMs; index++) {
+            for (index = 0; index < countDays; index++) {
                 fn.apply(instance, [curDate, index]);
 
                 curDate = DateMath.add(curDate, (incrementBy || DateMath.DAY), (factor || 1));
@@ -965,10 +986,10 @@ var SchedulerTableView = A.Component.create({
                 filterFn = this.get('filterFn'),
                 i = 0;
 
-            // Sort events by start date (they are sorted in a different way
+            // Sort events by start date and time (they are sorted in a different way
             // by default).
             events.sort(function(evt1, evt2) {
-                return evt1.getClearStartDate() - evt2.getClearStartDate();
+                return evt1.isAfter(evt2) ? 1 : -1;
             });
 
             while (i < events.length) {
@@ -1207,6 +1228,7 @@ var SchedulerTableView = A.Component.create({
                         label: strings[CLOSE]
                     }
                 ),
+                constrain: instance.get('eventsOverlayConstrain'),
                 render: instance.get(BOUNDING_BOX),
                 visible: false,
                 width: 250,
@@ -1266,6 +1288,10 @@ var SchedulerTableView = A.Component.create({
 
             if (evtNodeList.size() <= paddingNodeIndex) {
                 evt.addPaddingNode();
+            }
+
+            if (evtNodeList.size() <= paddingNodeIndex) {
+                paddingNodeIndex = evtNodeList.size() - 1;
             }
 
             var evtNode = evtNodeList.item(paddingNodeIndex);

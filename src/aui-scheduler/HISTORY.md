@@ -4,6 +4,12 @@
 
 ## @VERSION@
 
+* [AUI-2061](https://issues.liferay.com/browse/AUI-2061) Low performance on countDays method when using huge dates.
+* [AUI-1998](https://issues.liferay.com/browse/AUI-1998) Scheduler's month view does not display events in chronological order.
+* [AUI-1996](https://issues.liferay.com/browse/AUI-1996) Allow Scheduler to skip syncEventsUI to avoid redundant DOM manipulation.
+* [AUI-1997](https://issues.liferay.com/browse/AUI-1997) Overlay displaying extra events appears cropped or demands scrolling
+* [AUI-1929](https://issues.liferay.com/browse/AUI-1929) Alloy Scheduler does not add long events to each day the event occurs on in Agenda view.
+* [AUI-1544](https://issues.liferay.com/browse/AUI-1544) Javascript error breaks Scheduler month view with multiple overlapping events
 * [AUI-1920](https://issues.liferay.com/browse/AUI-1920) Calendar - Hiding calendar does not update neither events nor "Show n more" link
 * [AUI-1880](https://issues.liferay.com/browse/AUI-1880) Overlapping events don't show up correctly
 * [AUI-1871](https://issues.liferay.com/browse/AUI-1871) In month view, popover does not update values if an event was previously displayed

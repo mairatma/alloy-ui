@@ -7,6 +7,20 @@ YUI.add('module-tests', function(Y) {
     var suite = new Y.Test.Suite('aui-form-validator'),
         formValidator;
 
+    var isImageURL = function(val) {
+        var regex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
+        return regex.test(val);
+    };
+
+    Y.FormValidator.addCustomRules(
+        {
+            'imageURL': {
+                condition: isImageURL,
+                errorMessage: 'Please enter a valid URL that points to an image (jpg, jpeg, png, or gif).'
+            }
+        }
+    );
+
     formValidator = new Y.FormValidator({
         boundingBox: '#myForm',
         fieldStrings: {
@@ -31,6 +45,10 @@ YUI.add('module-tests', function(Y) {
                 required: true
             },
             gender: {
+                required: true
+            },
+            'image-url': {
+                imageURL: true,
                 required: true
             },
             name: {
@@ -88,6 +106,465 @@ YUI.add('module-tests', function(Y) {
             instance._assertValidatorNextLabel('input[value=male]');
 
             instance._assertValidatorNextLabel('input[name=read]');
+        },
+
+         /*
+         * Check if validator correctly validates fields with custom rules
+         * @tests AUI-1654
+         */
+        'test custom rules': function() {
+            var form = Y.Node.create('<form><input name="gt50" id="gt50" type="text"></form>'),
+                input = form.one('input'),
+                validator,
+                gt50Executed = false;
+
+            var gt50 = function(val, fieldNode, ruleValue) {
+                gt50Executed = true;
+
+                return (val >= 50);
+            };
+
+            Y.FormValidator.addCustomRules(
+                {
+                    'greaterThan50': {
+                        condition: gt50,
+                        errorMessage: 'The digit should be >=50'
+                    }
+                }
+            );
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    gt50: {
+                        greaterThan50: true,
+                        required: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(gt50Executed, 'gt50Executed should be true');
+
+            Y.Assert.isTrue(validator.hasErrors(), 'Validator should have errors');
+
+            input.attr('value', '42');
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(validator.hasErrors());
+
+            input.attr('value', '100');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly validates fields with custom rules which
+         * are required
+         * @tests AUI-2027
+         */
+        'test required custom rules': function() {
+            var form = Y.Node.create('<form><input name="inputName" type="text"></form>'),
+                input = form.one('input'),
+                validator,
+                custonFnExecuted;
+
+            var conditionFn = function() {
+                custonFnExecuted = true;
+
+                return true;
+            };
+
+            Y.FormValidator.addCustomRules(
+                {
+                    'myCustomRule': {
+                        condition: conditionFn,
+                        errorMessage: 'error message'
+                    }
+                }
+            );
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    inputName: {
+                        myCustomRule: true,
+                        required: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(custonFnExecuted, 'custonFnExecuted should be true');
+
+            Y.Assert.isTrue(validator.hasErrors(), 'Validator should have errors');
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly validates fields with custom rules that
+         * are required (using custon property)
+         * @tests AUI-2027
+         */
+        'test required (using custon property) custom rules': function() {
+            var form = Y.Node.create('<form><input name="inputName" type="text"></form>'),
+                input = form.one('input'),
+                validator,
+                custonFnExecuted;
+
+            var conditionFn = function(val) {
+                custonFnExecuted = true;
+
+                return !!val;
+            };
+
+            Y.FormValidator.addCustomRules(
+                {
+                    'myCustomRule': {
+                        condition: conditionFn,
+                        errorMessage: 'error message'
+                    }
+                }
+            );
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    inputName: {
+                        myCustomRule: true,
+                        custom: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(custonFnExecuted, 'custonFnExecuted should be true');
+
+            Y.Assert.isTrue(validator.hasErrors(), 'Validator should have errors');
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly passes rule value to custom rules
+         * @tests AUI-2027
+         */
+        'test passing rule values to custom rules': function() {
+            var form = Y.Node.create('<form><input name="gt50" id="gt50" type="text"></form>'),
+                input = form.one('input'),
+                validator;
+
+            var conditionFn = function(val, node, ruleValue) {
+                return ruleValue === 'my rule value';
+            };
+
+            Y.FormValidator.addCustomRules(
+                {
+                    'myCustomRule': {
+                        condition: conditionFn,
+                        errorMessage: 'error message'
+                    }
+                }
+            );
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    gt50: {
+                        myCustomRule: 'my rule value',
+                        required: true
+                    }
+                }
+            });
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly validates non-required fields
+         * via required: false
+         * @tests AUI-2027
+         */
+        'test non-required fields using required: false': function() {
+            var form = Y.Node.create('<form><input name="inputName" type="text"></form>'),
+                input = form.one('input'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    inputName: {
+                        required: false
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly validates hasValue rule
+         * @tests AUI-2027
+         */
+        'test hasValue rule': function() {
+            var form = Y.Node.create('<form><input name="inputName" type="text"></form>'),
+                input = form.one('input'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    inputName: {
+                        hasValue: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors on blank input');
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator correctly validates required fields when using a
+         * function as a rule value
+         *
+         * @tests AUI-2027
+         */
+        'test required fields using rule value as a function': function() {
+            var form = Y.Node.create('<form><input name="inputName" type="text"></form>'),
+                input = form.one('input'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    inputName: {
+                        required: function() {
+                            return true;
+                        }
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(validator.hasErrors(), 'Validator should have errors');
+
+            input.attr('value', 'anything');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator defaults to 'required' error message when showAllMessages is false
+         * @tests AUI-2043
+         */
+        'test required error message is first when showAllMessages is false': function() {
+            var form = Y.Node.create(
+                    '<form><input name="emailAddress" id="emailAddress" type="text"></form>'),
+                input = form.one('input'),
+                validator,
+                errorMessage,
+                fieldStackErrorContainer;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                fieldStrings: {
+                    emailAddress: {
+                        email: 'Please enter a valid email address.',
+                        required: 'This field is required.'
+                    }
+                },
+                rules: {
+                    emailAddress: {
+                        email: true,
+                        required: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            fieldStackErrorContainer = validator.getFieldStackErrorContainer(input);
+
+            errorMessage = fieldStackErrorContainer.text();
+
+            Y.Assert.isTrue(errorMessage === 'This field is required.', 'errorMessage should be required');
+
+            input.attr('value', 'not an email address');
+
+            form.simulate('submit');
+
+            errorMessage = fieldStackErrorContainer.text();
+
+            Y.Assert.isTrue(errorMessage === 'Please enter a valid email address.', 'errorMessage should be email');
+
+            input.attr('value', 'email@example.com');
+
+            form.simulate('submit');
+
+            Y.Assert.isFalse(validator.hasErrors(), 'Validator should have no errors');
+        },
+
+        /*
+         * Check if validator deletes the field from the errors property object.
+         * @tests AUI-2037
+         */
+        'should delete the field from the errors property object': function() {
+            var form = Y.Node.create(
+                    '<form><input class="my-input-keep" name="my-input-keep">' +
+                    '<input class="my-input-delete" name="my-input-delete"></form>'
+                ),
+                inputKeep = form.one('.my-input-keep'),
+                inputDelete = form.one('.my-input-delete'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form
+            });
+
+            validator.addFieldError(inputKeep, 'required');
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.clearFieldError(inputKeep);
+            Y.Assert.isFalse(validator.hasErrors());
+
+            validator.addFieldError(inputKeep, 'required');
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.clearFieldError('not-a-valid-field');
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.clearFieldError('my-input-keep');
+            Y.Assert.isFalse(validator.hasErrors());
+
+            validator.addFieldError(inputDelete, 'required');
+            inputDelete.remove();
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.clearFieldError('my-input-delete');
+            Y.Assert.isFalse(validator.hasErrors());
+        },
+
+        /*
+         * Check if validator resets the error status of a field.
+         * @tests AUI-2037
+         */
+        'should reset the error status of a field': function() {
+            var form = Y.Node.create(
+                    '<form><input class="my-input-keep" name="my-input-keep">' +
+                    '<input class="my-input-delete" name="my-input-delete"></form>'
+                ),
+                inputKeep = form.one('.my-input-keep'),
+                inputDelete = form.one('.my-input-delete'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    'my-input-keep': {
+                        required: true
+                    },
+                    'my-input-delete': {
+                        required: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.resetField(inputKeep);
+            validator.resetField(inputDelete);
+
+            Y.Assert.isFalse(validator.hasErrors());
+
+            form.simulate('submit');
+
+            inputDelete.remove();
+
+            validator.resetField(inputKeep);
+            validator.resetField(inputDelete);
+
+            Y.Assert.isFalse(validator.hasErrors());
+        },
+
+        /*
+         * Check if validator resets the error status of all fields.
+         * @tests AUI-2037
+         */
+        'should reset the error status of all fields': function() {
+            var form = Y.Node.create(
+                    '<form><input class="my-input-keep" name="my-input-keep">' +
+                    '<input class="my-input-delete" name="my-input-delete"></form>'
+                ),
+                inputDelete = form.one('.my-input-delete'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                rules: {
+                    'my-input-keep': {
+                        required: true
+                    },
+                    'my-input-delete': {
+                        required: true
+                    }
+                }
+            });
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(validator.hasErrors());
+
+            validator.resetAllFields();
+
+            Y.Assert.isFalse(validator.hasErrors());
+
+            form.simulate('submit');
+
+            inputDelete.remove();
+
+            validator.resetAllFields();
+
+            Y.Assert.isFalse(validator.hasErrors());
         },
 
         _assertValidatorNextLabel: function(input) {

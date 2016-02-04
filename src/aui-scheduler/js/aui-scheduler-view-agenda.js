@@ -470,7 +470,7 @@ var SchedulerAgendaView = A.Component.create({
                                         color: schedulerEvent.get(COLOR),
                                         content: schedulerEvent.get(CONTENT),
                                         dates: eventsDateFormatter.call(instance, startDate, endDate),
-                                        eventClassName: (startDate.getTime() < today.getTime()) ? CSS_EVENT_PAST : _EMPTY_STR,
+                                        eventClassName: ((date.getTime() < today.getTime()) || (endDate.getTime() < today.getTime())) ? CSS_EVENT_PAST : _EMPTY_STR,
                                         firstClassName: (seIndex === 0) ? CSS_EVENT_FIRST : _EMPTY_STR,
                                         lastClassName: (seIndex === schedulerEventsLength - 1) ? CSS_EVENT_LAST : _EMPTY_STR
                                     })
@@ -514,23 +514,30 @@ var SchedulerAgendaView = A.Component.create({
 
             scheduler.eachEvent(
                 function(schedulerEvent) {
-                    var startDate = schedulerEvent.get(START_DATE),
+                    var endDate = schedulerEvent.get(END_DATE),
+                        startDate = schedulerEvent.get(START_DATE),
                         visible = schedulerEvent.get(VISIBLE),
                         dayTS;
 
-                    if (!visible ||
-                        (startDate.getTime() < viewDate.getTime())) {
-
+                    if (!visible) {
                         return;
                     }
 
-                    dayTS = DateMath.safeClearTime(startDate).getTime();
+                    var displayDate = startDate;
 
-                    if (!eventsMap[dayTS]) {
-                        eventsMap[dayTS] = [];
+                    while (displayDate.getTime() <= endDate.getTime()) {
+                        if (displayDate.getTime() >= viewDate.getTime()) {
+                            dayTS = DateMath.safeClearTime(displayDate).getTime();
+
+                            if (!eventsMap[dayTS]) {
+                                eventsMap[dayTS] = [];
+                            }
+
+                            eventsMap[dayTS].push(schedulerEvent);
+                        }
+
+                        displayDate = DateMath.add(displayDate, DateMath.DAY, 1);
                     }
-
-                    eventsMap[dayTS].push(schedulerEvent);
                 }
             );
 
