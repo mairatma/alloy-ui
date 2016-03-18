@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../../build/aui-css/css/bootstrap.css">
+    <script src="../../build/aui/aui.js"></script>
+    <style>
+    body {
+        margin: 20px;
+    }
+    iframe {
+        border: 5px solid lightblue;
+    }
+    </style>
+</head>
+<body>
+    <iframe frameborder="0" border="0" scrolling="no" src="http://localhost/alloy-ui/2.0.x/demos/node-html5/frame-SAMEORIGIN" width="100%" height="100%"></iframe>
+    <script>
+    YUI({ filter:'raw' }).use('aui-node', function(Y) {
+
+      var body = Y.one('body');
+
+    });
+    </script>
+</body>
+</html>
