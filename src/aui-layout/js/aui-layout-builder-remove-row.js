@@ -31,7 +31,9 @@ LayoutBuilderRemoveRow.prototype = {
             this.after('enableRemoveRowsChange', A.bind(this._afterEnableRemoveRowsChange, this)),
             this.after('layout:rowsChange', A.bind(this._afterRemoveRowRowsChange, this)),
             this.after('layoutChange', A.bind(this._afterRemoveRowLayoutChange, this)),
-            this.after('layout:isColumnModeChange', A.bind(this._afterRemoveRowIsColumnModeChange, this))
+            this.after('layout:isColumnModeChange', A.bind(this._afterRemoveRowIsColumnModeChange, this)),
+            this.after('moveStart', A.bind(this._disableRemoveRows, this)),
+            this.after('moveEnd', A.bind(this._enableRemoveRows, this))
         );
 
         this._uiSetEnableRemoveRows(this.get('enableRemoveRows'));
@@ -144,6 +146,26 @@ LayoutBuilderRemoveRow.prototype = {
             container.delegate('click', A.bind(this._onMouseClickRemoveRowEvent, this), '.' + CSS_REMOVE_ROW),
             this.after('layout-row:removableChange', this._afterRemoveRowRemovableChange)
         ];
+    },
+
+    /**
+     * Protected method to set enableRemoveRows atribute as false.
+     *
+     * @method _disableRemoveRows
+     * @protected
+     */
+    _disableRemoveRows: function() {
+        this.set('enableRemoveRows', false);
+    },
+
+    /**
+     * Protected method to set enableRemoveRows atribute as true.
+     *
+     * @method _enableRemoveRows
+     * @protected
+     */
+    _enableRemoveRows: function() {
+        this.set('enableRemoveRows', true);
     },
 
     /**

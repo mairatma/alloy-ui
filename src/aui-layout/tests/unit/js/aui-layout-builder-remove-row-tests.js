@@ -199,7 +199,7 @@ YUI.add('aui-layout-builder-remove-row-tests', function(Y) {
             Y.Assert.isNull(deleteRowButton);
         },
 
-        'should remove remove row feature on smartphones': function() {
+        'should remove row feature on smartphones': function() {
             var removeRowButton = Y.one('.layout-builder-remove-row-button');
 
             Y.Assert.isNotNull(removeRowButton);
@@ -209,6 +209,34 @@ YUI.add('aui-layout-builder-remove-row-tests', function(Y) {
             removeRowButton = Y.one('.layout-builder-remove-row-button');
 
             Y.Assert.isNull(removeRowButton);
+        },
+
+        'should disable remove rows feature if user is moving a row': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this.layoutBuilder.get('enableRemoveRows'));
+        },
+
+        'should disable remove rows feature if user is moving a column': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this.layoutBuilder.get('enableRemoveRows'));
+        },
+
+        'should enable remove rows feature if user stop moving a column': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this.layoutBuilder.get('enableRemoveRows'));
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isTrue(this.layoutBuilder.get('enableRemoveRows'));
         }
     }));
 

@@ -723,6 +723,34 @@ YUI.add('aui-layout-builder-resize-col-tests', function(Y) {
             Assert.areEqual(false, dragHandle.item(0).hasClass('layout-builder-resize-col-draggable-visible'));
             Assert.areEqual(true, dragHandle.item(1).hasClass('layout-builder-resize-col-draggable-visible'));
             Assert.areEqual(true, dragHandle.item(2).hasClass('layout-builder-resize-col-draggable-visible'));
+        },
+
+        'should disable resize columns feature if user is moving a row': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this._layoutBuilder.get('enableResizeCols'));
+        },
+
+        'should disable resize columns feature if user is moving a column': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this._layoutBuilder.get('enableResizeCols'));
+        },
+
+        'should enable resize columns feature if user stop moving a column': function() {
+            var moveRowButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(this._layoutBuilder.get('enableResizeCols'));
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isTrue(this._layoutBuilder.get('enableResizeCols'));
         }
     }));
 

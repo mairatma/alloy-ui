@@ -71,7 +71,9 @@ A.LayoutBuilderResizeCol.prototype = {
 
         this._eventHandles.push(
             this.after('enableResizeColsChange', this._afterEnableResizeColsChange),
-            this.after('layout:isColumnModeChange', A.bind(this._afterResizeColIsColumnModeChange, this))
+            this.after('layout:isColumnModeChange', A.bind(this._afterResizeColIsColumnModeChange, this)),
+            this.on('moveStart', A.bind(this._disableResizeCols, this)),
+            this.on('moveEnd', A.bind(this._enableResizeCols, this))
         );
 
         this._uiSetEnableResizeCols(this.get('enableResizeCols'));
@@ -359,6 +361,26 @@ A.LayoutBuilderResizeCol.prototype = {
             cloneNode: true,
             moveOnEnd: false
         });
+    },
+
+    /**
+     * Protected method to set enableResizeCols atribute as false.
+     *
+     * @method _disableResizeCols
+     * @protected
+     */
+    _disableResizeCols: function() {
+        this.set('enableResizeCols', false);
+    },
+
+    /**
+     * Protected method to set enableResizeCols atribute as true.
+     *
+     * @method _enableResizeCols
+     * @protected
+     */
+    _enableResizeCols: function() {
+        this.set('enableResizeCols', true);
     },
 
     /**

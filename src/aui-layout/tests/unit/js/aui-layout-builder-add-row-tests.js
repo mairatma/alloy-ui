@@ -259,6 +259,62 @@ YUI.add('aui-layout-builder-add-row-tests', function(Y) {
             addNewRowOption.simulate('click');
 
             Assert.areNotEqual(bodyTopBeforeScroll, body.getBoundingClientRect().top);
+        },
+
+        'should not be able to add a new row if user is moving a row': function() {
+            var moveRowButton;
+
+            createALotOfRows();
+
+            moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
+        },
+
+        'should be able to add a new row if user stop moving a row': function() {
+            var moveRowButton;
+
+            createALotOfRows();
+
+            moveRowButton = Y.one('.layout-builder-move-cut-row-button');
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
+
+            moveRowButton.simulate('click');
+
+            Y.Assert.isTrue(layoutBuilder.get('enableAddRows'));
+        },
+
+        'should not be able to add a new row if user is moving a column': function() {
+            var moveColButton;
+
+            createALotOfRows();
+
+            moveColButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveColButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
+        },
+
+        'should be able to add a new row if users stop moving a column': function() {
+            var moveColButton;
+
+            createALotOfRows();
+
+            moveColButton = Y.one('.layout-builder-move-cut-col-button');
+
+            moveColButton.simulate('click');
+
+            Y.Assert.isFalse(layoutBuilder.get('enableAddRows'));
+
+            moveColButton.simulate('click');
+
+            Y.Assert.isTrue(layoutBuilder.get('enableAddRows'));
         }
     }));
 

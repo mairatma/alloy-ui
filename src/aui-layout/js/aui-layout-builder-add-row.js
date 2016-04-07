@@ -58,7 +58,9 @@ LayoutBuilderAddRow.prototype = {
         this._bodyNode = A.one('body');
 
         this._eventHandles.push(
-            this.after('enableAddRowsChange', this._afterEnableAddRowsChange)
+            this.after('enableAddRowsChange', this._afterEnableAddRowsChange),
+            this.after('moveStart', A.bind(this._disableAddRow, this)),
+            this.after('moveEnd', A.bind(this._enableAddRow, this))
         );
 
         this._uiSetEnableAddRows(this.get('enableAddRows'));
@@ -209,6 +211,26 @@ LayoutBuilderAddRow.prototype = {
         rowArea.setData('numberOfCols', 1);
 
         return rowArea;
+    },
+
+    /**
+     * Protected method to set enableAddRows atribute as false.
+     *
+     * @method _disableAddRow
+     * @protected
+     */
+    _disableAddRow: function() {
+        this.set('enableAddRows', false);
+    },
+
+    /**
+     * Protected method to set enableAddRows atribute as true.
+     *
+     * @method _enableAddRow
+     * @protected
+     */
+    _enableAddRow: function() {
+        this.set('enableAddRows', true);
     },
 
     /**
