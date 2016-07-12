@@ -7,6 +7,7 @@
 var CSS_BUTTON_SWITCH = A.getClassName('button', 'switch'),
     CSS_BUTTON_SWITCH_LEFT = A.getClassName('button', 'switch', 'left'),
     CSS_BUTTON_SWITCH_RIGHT = A.getClassName('button', 'switch', 'right'),
+    CSS_HIDDEN = A.getClassName('hidden'),
     CSS_INNER_CIRCLE = A.getClassName('button', 'switch', 'inner', 'circle'),
     CSS_INNER_LABEL_LEFT = A.getClassName('button', 'switch', 'inner', 'label', 'left'),
     CSS_INNER_LABEL_RIGHT = A.getClassName('button', 'switch', 'inner', 'label', 'right'),
@@ -43,6 +44,8 @@ A.ButtonSwitch = A.Base.create('button-switch', A.Widget, [], {
         this.after('activatedChange', this._afterActivatedChange, this);
         this.after('innerLabelLeftChange', this._afterInnerLabelLeftChange, this);
         this.after('innerLabelRightChange', this._afterInnerLabelRightChange, this);
+
+        this.on('visibleChange', this._onVisibleChange, this);
     },
 
     /**
@@ -59,6 +62,25 @@ A.ButtonSwitch = A.Base.create('button-switch', A.Widget, [], {
         this._uiSetActivate(this.get('activated'));
         this._uiSetInnerLabelLeft(this.get('innerLabelLeft'));
         this._uiSetInnerLabelRight(this.get('innerLabelRight'));
+        this._uiSetVisibility(this.get('visible'));
+    },
+
+    /**
+     * @method hide
+     * @description Sets the button switch's `visible` attribute to `false`
+     * @public
+     */
+    hide: function() {
+        this.set('visible', false);
+    },
+
+    /**
+     * @method show
+     * @description Sets the button switch's `visible` attribute to `true`
+     * @public
+    */
+    show: function() {
+        this.set('visible', true);
     },
 
     /**
@@ -135,6 +157,16 @@ A.ButtonSwitch = A.Base.create('button-switch', A.Widget, [], {
      */
     _onButtonSwitchKey: function() {
         this._onButtonSwitchInteraction();
+    },
+
+    /**
+     * Fires on `visibleChange` event.
+     *
+     * @method _onVisibleChange
+     * @protected
+     */
+    _onVisibleChange: function(event) {
+        this._uiSetVisibility(event.newVal);
     },
 
     /**
@@ -220,6 +252,19 @@ A.ButtonSwitch = A.Base.create('button-switch', A.Widget, [], {
      */
     _uiSetInnerLabelRight: function(label) {
         return this.get('content').one('.' + CSS_INNER_LABEL_RIGHT).set('text', label);
+    },
+
+    /**
+     * Add hidden CSS class for button visibility.
+     *
+     * @method _uiSetVisibility
+     * @param {String} val
+     * @protected
+     */
+     _uiSetVisibility: function(val) {
+        var boundingBox = this.get('boundingBox');
+
+        boundingBox.toggleClass(CSS_HIDDEN, !val);
     }
 }, {
 
@@ -279,6 +324,16 @@ A.ButtonSwitch = A.Base.create('button-switch', A.Widget, [], {
         innerLabelRight: {
             value: '',
             validator: A.Lang.isString
+        },
+
+        /**
+         * Sets visible/hidden state.
+         *
+         * @default true
+         * @type {Boolean}
+         */
+        visible: {
+            value: true
         }
     }
 });

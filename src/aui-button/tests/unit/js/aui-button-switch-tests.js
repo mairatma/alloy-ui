@@ -40,7 +40,7 @@ YUI.add('aui-button-switch-tests', function(Y) {
             Y.Assert.isFalse(content.one('.button-switch-inner-label-right').hasClass('hide'));
 
             content.simulate('click');
-            
+
             Y.Assert.isTrue(buttonSwitch.get('activated'));
             Y.Assert.isFalse(content.one('.button-switch-inner-label-left').hasClass('hide'));
             Y.Assert.isTrue(content.one('.button-switch-inner-label-right').hasClass('hide'));
@@ -57,7 +57,7 @@ YUI.add('aui-button-switch-tests', function(Y) {
             Y.Assert.isTrue(content.one('.button-switch-inner-label-right').hasClass('hide'));
 
             content.simulate('click');
-            
+
             Y.Assert.isFalse(this._buttonSwitch.get('activated'));
             Y.Assert.isTrue(content.one('.button-switch-inner-label-left').hasClass('hide'));
             Y.Assert.isFalse(content.one('.button-switch-inner-label-right').hasClass('hide'));
@@ -128,6 +128,18 @@ YUI.add('aui-button-switch-tests', function(Y) {
             Y.Assert.isFalse(buttonSwitch.get('activated'));
             Y.Assert.isTrue(content.one('.button-switch-inner-label-left').hasClass('hide'));
             Y.Assert.isFalse(content.one('.button-switch-inner-label-right').hasClass('hide'));
+        },
+
+        'should have hidden CSS class': function() {
+            this._buttonSwitch = new Y.ButtonSwitch({visible: false}).render('#container');
+
+            var boundingBox = this._buttonSwitch.get('boundingBox');
+
+            Y.Assert.isTrue(boundingBox.hasClass('hidden'), 'Button switch has the hidden CSS class');
+
+            this._buttonSwitch.set('visible', true);
+
+            Y.Assert.isFalse(boundingBox.hasClass('hidden'), 'Button does not have the hidden CSS class');
         }
     }));
 

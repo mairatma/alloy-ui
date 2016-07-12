@@ -32,7 +32,7 @@ YUI.add('aui-button-core-tests', function(Y) {
         'should update icon': function() {
             var button = this._button,
                 oldIcon = button.get('icon');
-            
+
             button.set('icon', 'glyphicon glyphicon-print');
             Y.Assert.areNotEqual(oldIcon, button.get('icon'));
         },
@@ -117,6 +117,22 @@ YUI.add('aui-button-core-tests', function(Y) {
             Y.Assert.areEqual(button.getNode().getAttribute('type'), 'button');
 
             button.destroy();
+        },
+
+        'should have hidden CSS class': function() {
+            this._button.destroy();
+
+            this.createButton({
+                label: 'Button',
+                srcNode: '#content',
+                visible: false
+            });
+
+            Y.Assert.isTrue(this._button.getNode().hasClass('hidden'), 'Button has the hidden CSS class');
+
+            this._button.set('visible', true);
+
+            Y.Assert.isFalse(this._button.getNode().hasClass('hidden'), 'Button does not have the hidden CSS class');
         }
     }));
 
